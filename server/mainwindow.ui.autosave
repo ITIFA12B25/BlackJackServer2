@@ -218,8 +218,8 @@
         <property name="title">
          <string/>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
           <widget class="QLabel" name="lblGameIdSimple">
            <property name="minimumSize">
             <size>
@@ -241,7 +241,7 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item>
           <widget class="QLabel" name="lblPlayerCardsSimple">
            <property name="font">
             <font>
@@ -254,7 +254,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item>
           <widget class="QLabel" name="lblDealerCardsSimple">
            <property name="font">
             <font>
@@ -267,7 +267,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item>
           <widget class="QLabel" name="lblPlayerTotalSimple">
            <property name="font">
             <font>
@@ -280,7 +280,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item>
           <widget class="QLabel" name="lblDealerTotalSimple">
            <property name="font">
             <font>
@@ -293,62 +293,52 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <property name="spacing">
-            <number>10</number>
+         <item>
+          <widget class="QPushButton" name="btnStand">
+           <property name="font">
+            <font>
+             <family>Comic Sans MS</family>
+             <pointsize>18</pointsize>
+            </font>
            </property>
-           <property name="bottomMargin">
-            <number>7</number>
+           <property name="text">
+            <string>STAND</string>
            </property>
-           <item>
-            <widget class="QPushButton" name="btnHit">
-             <property name="font">
-              <font>
-               <family>Comic Sans MS</family>
-               <pointsize>17</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>HIT</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btnStand">
-             <property name="font">
-              <font>
-               <family>Comic Sans MS</family>
-               <pointsize>18</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>STAND</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btnSplit">
-             <property name="font">
-              <font>
-               <family>Comic Sans MS</family>
-               <pointsize>17</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>SPLIT</string>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>20</width>
-               <height>50</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          </widget>
          </item>
-         <item row="6" column="0">
+         <item>
+          <widget class="QPushButton" name="btnHit">
+           <property name="font">
+            <font>
+             <family>Comic Sans MS</family>
+             <pointsize>17</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>HIT</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnSplit">
+           <property name="font">
+            <font>
+             <family>Comic Sans MS</family>
+             <pointsize>17</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>SPLIT</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>50</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="btnSwitchToTable">
            <property name="font">
             <font>
@@ -361,7 +351,7 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
+         <item>
           <widget class="QPushButton" name="btnLeaveGame1">
            <property name="font">
             <font>
