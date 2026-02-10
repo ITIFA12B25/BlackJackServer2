@@ -3,51 +3,58 @@
 
 #include <QObject>
 #include <QTcpSocket>
-#include <QString>
 #include <QJsonObject>
+#include <QString>
 
 #include "gamemanager.h"
-#include "hand.h"          // Hand / Card
 
-// Repräsentiert eine Server-Session für GENAU einen Client (ein Socket).
-// - liest JSON-Nachrichten (zeilenweise)
-// - verarbeitet Befehle (join/bet/hit/stand)
-// - sendet Antworten als JSON zurück
 class GameSession : public QObject
 {
     Q_OBJECT
 
 public:
-    // Übernimmt Client-Socket + GameManager (Parent sorgt fürs Aufräumen).
+    // Repräsentiert eine Client-Verbindung (eine Session pro Client)
     explicit GameSession(QTcpSocket* socket, GameManager* manager, QObject* parent = nullptr);
 
+    // Sendet ein JSON-Objekt als eine Zeile an den Client
+    void sendJson(const QJsonObject& obj);
+
 private slots:
-    // Daten vom Client verfügbar.
+    // Wird aufgerufen, wenn Daten vom Client ankommen
     void onReadyRead();
 
-    // Client hat getrennt.
+    // Wird aufgerufen, wenn der Client die Verbindung trennt
     void onDisconnected();
 
 private:
-    // ---- Netzwerk / Verwaltung ----
-    QTcpSocket*  m_socket  = nullptr;   // Verbindung zu diesem Client
-    GameManager* m_manager = nullptr;   // globale Spielverwaltung
+    QTcpSocket*  m_socket  = nullptr; // TCP-Verbindung zum Client
+    GameManager* m_manager = nullptr; // Referenz auf den GameManager
 
-    // ---- Session-Zustand ----
-    QString m_gameId;                   // optional: Spiel-ID (falls genutzt)
-    bool m_joined     = false;          // Client hat "join" gemacht
-    bool m_gameActive = false;          // Runde läuft
+    // Room-Infos dieser Session
+    QString m_roomId;       // ID vom Room, in dem der Client ist
+    int m_seat = -1;        // Sitzplatz (0 oder 1), -1 = noch keiner
+    QString m_playerName;   // Name des Spielers
 
-    Hand m_playerHand;                 // Karten Spieler
-    Hand m_dealerHand;                 // Karten Dealer
+    // Verarbeitet eine einzelne Zeile (JSON-String)
+    void handleLine(const QByteArray& line);
 
-    // ---- Parsing / Routing ----
-    void handleLine(const QByteArray& line);                         // JSON parsen
-    void handleMessage(const QString& type, const QString& gameId);  // Befehl ausführen
+    // Verarbeitet eine geparste JSON-Nachricht
+    void handleMessage(const QJsonObject& msg);
 
-    // ---- Antworten ----
-    void sendJson(const QJsonObject& obj);  // JSON + '\n' senden
-    void sendError(const QString& msg);     // {"type":"error","msg":...}
+    // Sendet eine Fehlermeldung an den Client
+    void sendError(const QString& msg);
+
+    // Broadcast: Nachricht an beide Clients im selben Room
+    void broadcastToRoom(const QJsonObject& obj);
+
+    // Sendet den gemeinsamen Spielzustand an alle Spieler im Room
+    void broadcastState(RoomState& r);
+
+    // Prüft, ob alle Spieler fertig sind, dann Dealer spielen lassen
+    void tryFinishIfAllDone(RoomState& r);
+
+    // Ermittelt das Spieler-Ergebnis (win/lose/push)
+    QString outcomeFor(int playerTotal, int dealerTotal) const;
 };
 
 #endif // GAMESESSION_H

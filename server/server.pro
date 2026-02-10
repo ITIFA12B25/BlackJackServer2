@@ -10,16 +10,14 @@ CONFIG += c++17
 SOURCES += \
     gamemanager.cpp \
     gamesession.cpp \
-    main.cpp \
-    mainwindow.cpp
+    main.cpp
 
 HEADERS += \
     card.h \
     deck.h \
     gamemanager.h \
     gamesession.h \
-    hand.h \
-    mainwindow.h
+    hand.h
 
 
 # Default rules for deployment.

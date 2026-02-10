@@ -3,14 +3,14 @@
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
   <property name="enabled">
-   <bool>true</bool>
+   <bool>false</bool>
   </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>785</width>
+    <height>588</height>
    </rect>
   </property>
   <property name="font">
@@ -25,16 +25,22 @@
    <enum>QTabWidget::TabShape::Rounded</enum>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_4">
-    <item>
+   <layout class="QGridLayout" name="gridLayout_6">
+    <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="pageCreateRoom">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QGroupBox" name="CreateRoomBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="font">
            <font>
             <family>Comic Sans MS</family>
@@ -54,6 +60,9 @@
           <layout class="QGridLayout" name="gridLayout_5">
            <item row="0" column="0">
             <widget class="QLabel" name="balanceEdit">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -78,7 +87,7 @@
            <item row="1" column="0">
             <widget class="QLineEdit" name="editBalance">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="font">
               <font>
@@ -94,6 +103,9 @@
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="label_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="font">
               <font>
                <family>Comic Sans MS</family>
@@ -108,6 +120,9 @@
            </item>
            <item row="3" column="0">
             <widget class="QSpinBox" name="spinPlayers">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -131,6 +146,9 @@
            </item>
            <item row="4" column="0">
             <widget class="QPushButton" name="btnCreateRoom">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="font">
               <font>
                <family>Comic Sans MS</family>
@@ -151,6 +169,9 @@
            </item>
            <item row="5" column="0">
             <widget class="QPushButton" name="btnBackFromCreate">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="font">
               <font>
                <family>Comic Sans MS</family>
@@ -184,29 +205,280 @@
           <property name="title">
            <string/>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <property name="sizeConstraint">
-            <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
-           </property>
-           <property name="leftMargin">
-            <number>11</number>
-           </property>
-           <property name="topMargin">
-            <number>7</number>
-           </property>
-           <property name="rightMargin">
-            <number>11</number>
-           </property>
-           <property name="bottomMargin">
-            <number>18</number>
-           </property>
-           <property name="horizontalSpacing">
-            <number>7</number>
-           </property>
-           <item row="5" column="0">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0" colspan="5">
+            <widget class="QLabel" name="lblRoomInfo">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>713</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>500</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Comic Sans MS</family>
+               <pointsize>17</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>ROOM ID :       </string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::TextFormat::AutoText</enum>
+             </property>
+             <property name="scaledContents">
+              <bool>true</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>lblRoomInfo</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="lblStatus">
+             <property name="font">
+              <font>
+               <family>Comic Sans MS</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>STATUS : WAITING</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QGroupBox" name="groupBox_player1">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Comic Sans MS</family>
+               <pointsize>13</pointsize>
+              </font>
+             </property>
+             <property name="title">
+              <string>YOU </string>
+             </property>
+             <widget class="QLabel" name="lblPlayerTotal">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>30</y>
+                <width>49</width>
+                <height>16</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Comic Sans MS</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>TOTAL :  </string>
+              </property>
+             </widget>
+            </widget>
+           </item>
+           <item row="2" column="3" colspan="2">
+            <widget class="QGroupBox" name="groupBox_player2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Comic Sans MS</family>
+               <pointsize>13</pointsize>
+              </font>
+             </property>
+             <property name="title">
+              <string/>
+             </property>
+             <widget class="QLabel" name="lblOppTotal">
+              <property name="geometry">
+               <rect>
+                <x>20</x>
+                <y>30</y>
+                <width>49</width>
+                <height>16</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <family>Comic Sans MS</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>TOTAL:   </string>
+              </property>
+             </widget>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="lblPlayerCard1">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>135</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLabel" name="lblPlayerCard2">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>135</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>32</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>280</width>
+               <height>180</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Comic Sans MS</family>
+               <pointsize>13</pointsize>
+              </font>
+             </property>
+             <property name="title">
+              <string>DEALER</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0">
+               <widget class="QLabel" name="lblDealerCard1">
+                <property name="minimumSize">
+                 <size>
+                  <width>90</width>
+                  <height>135</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="lblDealerCard3">
+                <property name="minimumSize">
+                 <size>
+                  <width>90</width>
+                  <height>135</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="lblDealerCard2">
+                <property name="minimumSize">
+                 <size>
+                  <width>90</width>
+                  <height>135</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="3">
+            <widget class="QLabel" name="lblOppCard2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>135</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="4">
+            <widget class="QLabel" name="lblOppCard1">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>135</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="3" colspan="2">
             <widget class="QPushButton" name="btnSwitchToTable">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -214,7 +486,7 @@
              <property name="minimumSize">
               <size>
                <width>0</width>
-               <height>40</height>
+               <height>45</height>
               </size>
              </property>
              <property name="font">
@@ -224,11 +496,36 @@
               </font>
              </property>
              <property name="text">
-              <string>TABLE VIEW</string>
+              <string>Switch to Table</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="5" column="3" colspan="2">
+            <widget class="QPushButton" name="btnNewRound_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>45</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Comic Sans MS</family>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>NEW ROUND</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" colspan="2">
             <widget class="QPushButton" name="btnHit">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -253,158 +550,7 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="2">
-            <widget class="QPushButton" name="btnLeaveGame1">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>40</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Comic Sans MS</family>
-               <pointsize>14</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>LEAVE/BACK</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QGroupBox" name="lblDealerCardsSimple_2">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>100</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Comic Sans MS</family>
-               <pointsize>10</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="title">
-              <string>Dealer</string>
-             </property>
-             <widget class="QLabel" name="lblDealerCardsSimple">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>38</width>
-                <height>27</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Comic Sans MS</family>
-                <pointsize>10</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>?,?</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-             <widget class="QLabel" name="lblDealerTotalSimple">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>70</y>
-                <width>105</width>
-                <height>27</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Comic Sans MS</family>
-                <pointsize>10</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>DealerTotal : 0</string>
-              </property>
-             </widget>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QGroupBox" name="lblDealerCardsSimple_3">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>100</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Comic Sans MS</family>
-               <pointsize>10</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="title">
-              <string>Player</string>
-             </property>
-             <widget class="QLabel" name="lblPlayerCardsSimple">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>38</width>
-                <height>27</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Comic Sans MS</family>
-                <pointsize>10</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>?,?</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-             <widget class="QLabel" name="lblPlayerTotalSimple">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>70</y>
-                <width>111</width>
-                <height>27</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Comic Sans MS</family>
-                <pointsize>10</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>PlayerTotal : 0</string>
-              </property>
-             </widget>
-            </widget>
-           </item>
-           <item row="4" column="1">
+           <item row="6" column="2">
             <widget class="QPushButton" name="btnStand">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -429,10 +575,10 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="2">
-            <widget class="QPushButton" name="btnSplit">
+           <item row="6" column="3" colspan="2">
+            <widget class="QPushButton" name="btnLeaveGame1">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -446,60 +592,43 @@
              <property name="font">
               <font>
                <family>Comic Sans MS</family>
-               <pointsize>17</pointsize>
+               <pointsize>14</pointsize>
               </font>
              </property>
              <property name="text">
-              <string>SPLIT</string>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>20</width>
-               <height>50</height>
-              </size>
+              <string>LEAVE/BACK</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0" colspan="3">
-            <widget class="QLabel" name="lblGameIdSimple">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
+           <item row="5" column="1">
+            <widget class="QLabel" name="lblDealerTotal">
              <property name="minimumSize">
               <size>
-               <width>713</width>
+               <width>0</width>
                <height>15</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>500</height>
               </size>
              </property>
              <property name="font">
               <font>
                <family>Comic Sans MS</family>
-               <pointsize>14</pointsize>
+               <pointsize>8</pointsize>
               </font>
              </property>
              <property name="text">
-              <string>GameId:</string>
+              <string>DEALER TOTAL :      </string>
              </property>
-             <property name="textFormat">
-              <enum>Qt::TextFormat::AutoText</enum>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QLabel" name="lblOppName">
+             <property name="font">
+              <font>
+               <family>Comic Sans MS</family>
+               <pointsize>12</pointsize>
+              </font>
              </property>
-             <property name="scaledContents">
-              <bool>true</bool>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
-             </property>
-             <property name="buddy">
-              <cstring>lblGameIdSimple</cstring>
+             <property name="text">
+              <string>lblOppName</string>
              </property>
             </widget>
            </item>
@@ -509,257 +638,180 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pageGameTable">
-       <widget class="QPushButton" name="btnSplit2">
-        <property name="geometry">
-         <rect>
-          <x>587</x>
-          <y>428</y>
-          <width>86</width>
-          <height>43</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Comic Sans MS</family>
-          <pointsize>17</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>SPLIT</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>20</width>
-          <height>50</height>
-         </size>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btnHit2">
-        <property name="geometry">
-         <rect>
-          <x>9</x>
-          <y>428</y>
-          <width>81</width>
-          <height>43</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Comic Sans MS</family>
-          <pointsize>17</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>HIT</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btnStand2">
-        <property name="geometry">
-         <rect>
-          <x>202</x>
-          <y>428</y>
-          <width>100</width>
-          <height>43</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Comic Sans MS</family>
-          <pointsize>17</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>STAND</string>
-        </property>
-       </widget>
-       <widget class="QGroupBox" name="grpFinance">
-        <property name="geometry">
-         <rect>
-          <x>9</x>
-          <y>9</y>
-          <width>187</width>
-          <height>204</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Comic Sans MS</family>
-          <pointsize>10</pointsize>
-          <fontweight>Black</fontweight>
-         </font>
-        </property>
-        <property name="title">
-         <string>Finance</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
-        </property>
-        <widget class="QLabel" name="lblBalanceValue">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>30</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="lblTotalBetValue">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>50</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="lblTotalWinValue">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>70</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QGroupBox" name="grpSeat1">
-        <property name="geometry">
-         <rect>
-          <x>300</x>
-          <y>280</y>
-          <width>151</width>
-          <height>101</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Comic Sans MS</family>
-          <pointsize>10</pointsize>
-          <fontweight>Black</fontweight>
-         </font>
-        </property>
-        <property name="title">
-         <string>YOU</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
-        </property>
-        <widget class="QLabel" name="lblSeat1Cards">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>30</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="lblSeat1Total">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>50</y>
-           <width>63</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QPushButton" name="btnLeaveGame2">
-        <property name="geometry">
-         <rect>
-          <x>9</x>
-          <y>477</y>
-          <width>161</width>
-          <height>43</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Comic Sans MS</family>
-          <pointsize>17</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>LEAVE/BACK</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btnSwitchToSimple">
-        <property name="geometry">
-         <rect>
-          <x>394</x>
-          <y>477</y>
-          <width>177</width>
-          <height>43</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Comic Sans MS</family>
-          <pointsize>17</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>SIMPLE VIEW</string>
-        </property>
-       </widget>
-       <widget class="QGroupBox" name="grpDealer">
-        <property name="geometry">
-         <rect>
-          <x>587</x>
-          <y>9</y>
-          <width>97</width>
-          <height>84</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Comic Sans MS</family>
-          <pointsize>10</pointsize>
-          <fontweight>Black</fontweight>
-         </font>
-        </property>
-        <property name="title">
-         <string>Dealer</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QLabel" name="lblDealerCardsTable">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0" colspan="3">
+         <widget class="QLabel" name="lblRoomInfo_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>713</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>500</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>17</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>ROOM ID :       </string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::TextFormat::AutoText</enum>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>lblRoomInfo</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QTableWidget" name="tableWidget">
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <row>
            <property name="text">
-            <string>TextLabel</string>
+            <string>New Row</string>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="lblDealerTotalTable">
+          </row>
+          <row>
            <property name="text">
-            <string>TextLabel :</string>
+            <string>DEALER</string>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+          </row>
+          <row>
+           <property name="text">
+            <string>PLAYER1</string>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>TOTAL</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>CARDS</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>New Column</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>STOOD</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QPushButton" name="btnNewRound">
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>17</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>NEW ROUND</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="btnSwitchToSimple">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>17</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>SIMPLE VIEW</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QPushButton" name="btnHit2">
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>17</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>HIT</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QPushButton" name="btnStand2">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>17</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>STAND</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="QPushButton" name="btnLeaveGame2">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>17</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>LEAVE/BACK</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="pageJoinRoom">
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -818,6 +870,12 @@
           <property name="alternatingRowColors">
            <bool>false</bool>
           </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
           <property name="showGrid">
            <bool>true</bool>
           </property>
@@ -831,13 +889,13 @@
            <bool>true</bool>
           </property>
           <property name="cornerButtonEnabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="rowCount">
            <number>3</number>
           </property>
           <property name="columnCount">
-           <number>3</number>
+           <number>4</number>
           </property>
           <attribute name="horizontalHeaderVisible">
            <bool>true</bool>
@@ -880,7 +938,7 @@
           <row/>
           <column>
            <property name="text">
-            <string>SERVER ID</string>
+            <string>ROOM ID</string>
            </property>
            <property name="font">
             <font>
@@ -891,7 +949,7 @@
           </column>
           <column>
            <property name="text">
-            <string>NAME</string>
+            <string>HOST NAME</string>
            </property>
            <property name="font">
             <font>
@@ -902,21 +960,26 @@
           </column>
           <column>
            <property name="text">
-            <string>PLAYERS</string>
+            <string>STATUS</string>
            </property>
            <property name="font">
             <font>
              <family>Comic Sans MS</family>
              <pointsize>14</pointsize>
             </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>PLAYER (1/2)</string>
            </property>
           </column>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnJoinSelected">
+         <widget class="QPushButton" name="join_room">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -938,12 +1001,15 @@
            </font>
           </property>
           <property name="text">
-           <string>Join</string>
+           <string>Join Room</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="btnBackFromJoin">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -967,12 +1033,59 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="Refresh">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>17</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Refresh</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="pageLobby">
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="connection">
+          <property name="minimumSize">
+           <size>
+            <width>15</width>
+            <height>15</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
          <widget class="QLabel" name="label">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>250</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <family>Comic Sans MS</family>
@@ -997,8 +1110,8 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QPushButton" name="btnGoCreate">
+        <item row="2" column="0">
+         <widget class="QLineEdit" name="txtName">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -1012,11 +1125,33 @@
            </font>
           </property>
           <property name="text">
-           <string>CREAT GAME</string>
+           <string>NAME:</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="btnGoCreate">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>19</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>CREATE GAME</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
          <widget class="QPushButton" name="btnGoJoin">
           <property name="minimumSize">
            <size>
@@ -1035,6 +1170,25 @@
           </property>
          </widget>
         </item>
+        <item row="5" column="0">
+         <widget class="QPushButton" name="History">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Comic Sans MS</family>
+            <pointsize>19</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>HISTORY</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -1046,8 +1200,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>33</height>
+     <width>785</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>

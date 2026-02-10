@@ -33,7 +33,7 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
-    QVBoxLayout *verticalLayout_4;
+    QGridLayout *gridLayout_6;
     QStackedWidget *stackedWidget;
     QWidget *pageCreateRoom;
     QVBoxLayout *verticalLayout_2;
@@ -48,47 +48,53 @@ public:
     QWidget *pageGameSimple;
     QHBoxLayout *horizontalLayout;
     QGroupBox *groupBox;
+    QGridLayout *gridLayout_4;
+    QLabel *lblRoomInfo;
+    QLabel *lblStatus;
+    QGroupBox *groupBox_player1;
+    QLabel *lblPlayerTotal;
+    QGroupBox *groupBox_player2;
+    QLabel *lblOppTotal;
+    QLabel *lblPlayerCard1;
+    QLabel *lblPlayerCard2;
+    QGroupBox *groupBox_2;
     QGridLayout *gridLayout_3;
+    QLabel *lblDealerCard1;
+    QLabel *lblDealerCard3;
+    QLabel *lblDealerCard2;
+    QLabel *lblOppCard2;
+    QLabel *lblOppCard1;
     QPushButton *btnSwitchToTable;
+    QPushButton *btnNewRound_2;
     QPushButton *btnHit;
-    QPushButton *btnLeaveGame1;
-    QGroupBox *lblDealerCardsSimple_2;
-    QLabel *lblDealerCardsSimple;
-    QLabel *lblDealerTotalSimple;
-    QGroupBox *lblDealerCardsSimple_3;
-    QLabel *lblPlayerCardsSimple;
-    QLabel *lblPlayerTotalSimple;
     QPushButton *btnStand;
-    QPushButton *btnSplit;
-    QLabel *lblGameIdSimple;
+    QPushButton *btnLeaveGame1;
+    QLabel *lblDealerTotal;
+    QLabel *lblOppName;
     QWidget *pageGameTable;
-    QPushButton *btnSplit2;
+    QGridLayout *gridLayout_2;
+    QLabel *lblRoomInfo_2;
+    QTableWidget *tableWidget;
+    QPushButton *btnNewRound;
+    QPushButton *btnSwitchToSimple;
     QPushButton *btnHit2;
     QPushButton *btnStand2;
-    QGroupBox *grpFinance;
-    QLabel *lblBalanceValue;
-    QLabel *lblTotalBetValue;
-    QLabel *lblTotalWinValue;
-    QGroupBox *grpSeat1;
-    QLabel *lblSeat1Cards;
-    QLabel *lblSeat1Total;
     QPushButton *btnLeaveGame2;
-    QPushButton *btnSwitchToSimple;
-    QGroupBox *grpDealer;
-    QGridLayout *gridLayout_2;
-    QLabel *lblDealerCardsTable;
-    QLabel *lblDealerTotalTable;
     QWidget *pageJoinRoom;
     QVBoxLayout *verticalLayout_3;
     QLabel *label_3;
     QTableWidget *tblRooms;
-    QPushButton *btnJoinSelected;
+    QPushButton *join_room;
     QPushButton *btnBackFromJoin;
+    QPushButton *Refresh;
     QWidget *pageLobby;
-    QVBoxLayout *verticalLayout;
+    QGridLayout *gridLayout;
+    QLabel *connection;
     QLabel *label;
+    QLineEdit *txtName;
     QPushButton *btnGoCreate;
     QPushButton *btnGoJoin;
+    QPushButton *History;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -96,24 +102,26 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->setEnabled(true);
-        MainWindow->resize(800, 600);
+        MainWindow->setEnabled(false);
+        MainWindow->resize(785, 588);
         QFont font;
         font.setPointSize(8);
         MainWindow->setFont(font);
         MainWindow->setTabShape(QTabWidget::TabShape::Rounded);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
-        verticalLayout_4 = new QVBoxLayout(centralwidget);
-        verticalLayout_4->setObjectName("verticalLayout_4");
+        gridLayout_6 = new QGridLayout(centralwidget);
+        gridLayout_6->setObjectName("gridLayout_6");
         stackedWidget = new QStackedWidget(centralwidget);
         stackedWidget->setObjectName("stackedWidget");
+        stackedWidget->setEnabled(false);
         pageCreateRoom = new QWidget();
         pageCreateRoom->setObjectName("pageCreateRoom");
         verticalLayout_2 = new QVBoxLayout(pageCreateRoom);
         verticalLayout_2->setObjectName("verticalLayout_2");
         CreateRoomBox = new QGroupBox(pageCreateRoom);
         CreateRoomBox->setObjectName("CreateRoomBox");
+        CreateRoomBox->setEnabled(false);
         QFont font1;
         font1.setFamilies({QString::fromUtf8("Comic Sans MS")});
         font1.setPointSize(24);
@@ -125,6 +133,7 @@ public:
         gridLayout_5->setObjectName("gridLayout_5");
         balanceEdit = new QLabel(CreateRoomBox);
         balanceEdit->setObjectName("balanceEdit");
+        balanceEdit->setEnabled(false);
         QSizePolicy sizePolicy(QSizePolicy::Policy::MinimumExpanding, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -141,19 +150,21 @@ public:
 
         editBalance = new QLineEdit(CreateRoomBox);
         editBalance->setObjectName("editBalance");
-        editBalance->setEnabled(true);
+        editBalance->setEnabled(false);
         editBalance->setFont(font2);
 
         gridLayout_5->addWidget(editBalance, 1, 0, 1, 1);
 
         label_2 = new QLabel(CreateRoomBox);
         label_2->setObjectName("label_2");
+        label_2->setEnabled(false);
         label_2->setFont(font2);
 
         gridLayout_5->addWidget(label_2, 2, 0, 1, 1);
 
         spinPlayers = new QSpinBox(CreateRoomBox);
         spinPlayers->setObjectName("spinPlayers");
+        spinPlayers->setEnabled(false);
         QSizePolicy sizePolicy1(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -167,6 +178,7 @@ public:
 
         btnCreateRoom = new QPushButton(CreateRoomBox);
         btnCreateRoom->setObjectName("btnCreateRoom");
+        btnCreateRoom->setEnabled(false);
         QFont font3;
         font3.setFamilies({QString::fromUtf8("Comic Sans MS")});
         font3.setPointSize(18);
@@ -178,6 +190,7 @@ public:
 
         btnBackFromCreate = new QPushButton(CreateRoomBox);
         btnBackFromCreate->setObjectName("btnBackFromCreate");
+        btnBackFromCreate->setEnabled(false);
         btnBackFromCreate->setFont(font2);
 
         gridLayout_5->addWidget(btnBackFromCreate, 5, 0, 1, 1);
@@ -194,120 +207,198 @@ public:
         groupBox->setObjectName("groupBox");
         groupBox->setMinimumSize(QSize(741, 200));
         groupBox->setAutoFillBackground(true);
-        gridLayout_3 = new QGridLayout(groupBox);
-        gridLayout_3->setObjectName("gridLayout_3");
-        gridLayout_3->setSizeConstraint(QLayout::SizeConstraint::SetNoConstraint);
-        gridLayout_3->setHorizontalSpacing(7);
-        gridLayout_3->setContentsMargins(11, 7, 11, 18);
-        btnSwitchToTable = new QPushButton(groupBox);
-        btnSwitchToTable->setObjectName("btnSwitchToTable");
-        QSizePolicy sizePolicy2(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed);
+        gridLayout_4 = new QGridLayout(groupBox);
+        gridLayout_4->setObjectName("gridLayout_4");
+        lblRoomInfo = new QLabel(groupBox);
+        lblRoomInfo->setObjectName("lblRoomInfo");
+        QSizePolicy sizePolicy2(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Minimum);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(btnSwitchToTable->sizePolicy().hasHeightForWidth());
-        btnSwitchToTable->setSizePolicy(sizePolicy2);
-        btnSwitchToTable->setMinimumSize(QSize(0, 40));
+        sizePolicy2.setHeightForWidth(lblRoomInfo->sizePolicy().hasHeightForWidth());
+        lblRoomInfo->setSizePolicy(sizePolicy2);
+        lblRoomInfo->setMinimumSize(QSize(713, 25));
+        lblRoomInfo->setMaximumSize(QSize(16777215, 500));
+        lblRoomInfo->setFont(font2);
+        lblRoomInfo->setTextFormat(Qt::TextFormat::AutoText);
+        lblRoomInfo->setScaledContents(true);
+        lblRoomInfo->setAlignment(Qt::AlignmentFlag::AlignCenter);
+
+        gridLayout_4->addWidget(lblRoomInfo, 0, 0, 1, 5);
+
+        lblStatus = new QLabel(groupBox);
+        lblStatus->setObjectName("lblStatus");
         QFont font4;
         font4.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font4.setPointSize(14);
-        btnSwitchToTable->setFont(font4);
+        font4.setPointSize(8);
+        lblStatus->setFont(font4);
 
-        gridLayout_3->addWidget(btnSwitchToTable, 5, 0, 1, 1);
+        gridLayout_4->addWidget(lblStatus, 1, 2, 1, 1);
+
+        groupBox_player1 = new QGroupBox(groupBox);
+        groupBox_player1->setObjectName("groupBox_player1");
+        QSizePolicy sizePolicy3(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Preferred);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(groupBox_player1->sizePolicy().hasHeightForWidth());
+        groupBox_player1->setSizePolicy(sizePolicy3);
+        groupBox_player1->setMinimumSize(QSize(200, 100));
+        QFont font5;
+        font5.setFamilies({QString::fromUtf8("Comic Sans MS")});
+        font5.setPointSize(13);
+        groupBox_player1->setFont(font5);
+        lblPlayerTotal = new QLabel(groupBox_player1);
+        lblPlayerTotal->setObjectName("lblPlayerTotal");
+        lblPlayerTotal->setGeometry(QRect(10, 30, 49, 16));
+        lblPlayerTotal->setFont(font4);
+
+        gridLayout_4->addWidget(groupBox_player1, 2, 0, 1, 2);
+
+        groupBox_player2 = new QGroupBox(groupBox);
+        groupBox_player2->setObjectName("groupBox_player2");
+        sizePolicy3.setHeightForWidth(groupBox_player2->sizePolicy().hasHeightForWidth());
+        groupBox_player2->setSizePolicy(sizePolicy3);
+        groupBox_player2->setMinimumSize(QSize(200, 100));
+        groupBox_player2->setFont(font5);
+        lblOppTotal = new QLabel(groupBox_player2);
+        lblOppTotal->setObjectName("lblOppTotal");
+        lblOppTotal->setGeometry(QRect(20, 30, 49, 16));
+        lblOppTotal->setFont(font4);
+
+        gridLayout_4->addWidget(groupBox_player2, 2, 3, 1, 2);
+
+        lblPlayerCard1 = new QLabel(groupBox);
+        lblPlayerCard1->setObjectName("lblPlayerCard1");
+        lblPlayerCard1->setMinimumSize(QSize(90, 135));
+
+        gridLayout_4->addWidget(lblPlayerCard1, 3, 0, 1, 1);
+
+        lblPlayerCard2 = new QLabel(groupBox);
+        lblPlayerCard2->setObjectName("lblPlayerCard2");
+        lblPlayerCard2->setMinimumSize(QSize(90, 135));
+
+        gridLayout_4->addWidget(lblPlayerCard2, 3, 1, 1, 1);
+
+        groupBox_2 = new QGroupBox(groupBox);
+        groupBox_2->setObjectName("groupBox_2");
+        QSizePolicy sizePolicy4(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+        sizePolicy4.setHorizontalStretch(32);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(groupBox_2->sizePolicy().hasHeightForWidth());
+        groupBox_2->setSizePolicy(sizePolicy4);
+        groupBox_2->setMinimumSize(QSize(280, 180));
+        groupBox_2->setFont(font5);
+        gridLayout_3 = new QGridLayout(groupBox_2);
+        gridLayout_3->setObjectName("gridLayout_3");
+        lblDealerCard1 = new QLabel(groupBox_2);
+        lblDealerCard1->setObjectName("lblDealerCard1");
+        lblDealerCard1->setMinimumSize(QSize(90, 135));
+
+        gridLayout_3->addWidget(lblDealerCard1, 0, 0, 1, 1);
+
+        lblDealerCard3 = new QLabel(groupBox_2);
+        lblDealerCard3->setObjectName("lblDealerCard3");
+        lblDealerCard3->setMinimumSize(QSize(90, 135));
+
+        gridLayout_3->addWidget(lblDealerCard3, 0, 1, 1, 1);
+
+        lblDealerCard2 = new QLabel(groupBox_2);
+        lblDealerCard2->setObjectName("lblDealerCard2");
+        lblDealerCard2->setMinimumSize(QSize(90, 135));
+
+        gridLayout_3->addWidget(lblDealerCard2, 0, 2, 1, 1);
+
+
+        gridLayout_4->addWidget(groupBox_2, 3, 2, 1, 1);
+
+        lblOppCard2 = new QLabel(groupBox);
+        lblOppCard2->setObjectName("lblOppCard2");
+        sizePolicy1.setHeightForWidth(lblOppCard2->sizePolicy().hasHeightForWidth());
+        lblOppCard2->setSizePolicy(sizePolicy1);
+        lblOppCard2->setMinimumSize(QSize(90, 135));
+
+        gridLayout_4->addWidget(lblOppCard2, 3, 3, 1, 1);
+
+        lblOppCard1 = new QLabel(groupBox);
+        lblOppCard1->setObjectName("lblOppCard1");
+        lblOppCard1->setMinimumSize(QSize(90, 135));
+
+        gridLayout_4->addWidget(lblOppCard1, 3, 4, 1, 1);
+
+        btnSwitchToTable = new QPushButton(groupBox);
+        btnSwitchToTable->setObjectName("btnSwitchToTable");
+        QSizePolicy sizePolicy5(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Fixed);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(btnSwitchToTable->sizePolicy().hasHeightForWidth());
+        btnSwitchToTable->setSizePolicy(sizePolicy5);
+        btnSwitchToTable->setMinimumSize(QSize(0, 45));
+        QFont font6;
+        font6.setFamilies({QString::fromUtf8("Comic Sans MS")});
+        font6.setPointSize(14);
+        btnSwitchToTable->setFont(font6);
+
+        gridLayout_4->addWidget(btnSwitchToTable, 4, 3, 1, 2);
+
+        btnNewRound_2 = new QPushButton(groupBox);
+        btnNewRound_2->setObjectName("btnNewRound_2");
+        sizePolicy5.setHeightForWidth(btnNewRound_2->sizePolicy().hasHeightForWidth());
+        btnNewRound_2->setSizePolicy(sizePolicy5);
+        btnNewRound_2->setMinimumSize(QSize(0, 45));
+        btnNewRound_2->setFont(font6);
+
+        gridLayout_4->addWidget(btnNewRound_2, 5, 3, 1, 2);
 
         btnHit = new QPushButton(groupBox);
         btnHit->setObjectName("btnHit");
-        sizePolicy2.setHeightForWidth(btnHit->sizePolicy().hasHeightForWidth());
-        btnHit->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy6(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Fixed);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(btnHit->sizePolicy().hasHeightForWidth());
+        btnHit->setSizePolicy(sizePolicy6);
         btnHit->setMinimumSize(QSize(0, 45));
-        QFont font5;
-        font5.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font5.setPointSize(17);
-        btnHit->setFont(font5);
+        QFont font7;
+        font7.setFamilies({QString::fromUtf8("Comic Sans MS")});
+        font7.setPointSize(17);
+        btnHit->setFont(font7);
 
-        gridLayout_3->addWidget(btnHit, 4, 0, 1, 1);
-
-        btnLeaveGame1 = new QPushButton(groupBox);
-        btnLeaveGame1->setObjectName("btnLeaveGame1");
-        sizePolicy2.setHeightForWidth(btnLeaveGame1->sizePolicy().hasHeightForWidth());
-        btnLeaveGame1->setSizePolicy(sizePolicy2);
-        btnLeaveGame1->setMinimumSize(QSize(0, 40));
-        btnLeaveGame1->setFont(font4);
-
-        gridLayout_3->addWidget(btnLeaveGame1, 5, 2, 1, 1);
-
-        lblDealerCardsSimple_2 = new QGroupBox(groupBox);
-        lblDealerCardsSimple_2->setObjectName("lblDealerCardsSimple_2");
-        lblDealerCardsSimple_2->setMinimumSize(QSize(0, 100));
-        QFont font6;
-        font6.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font6.setPointSize(10);
-        font6.setBold(true);
-        lblDealerCardsSimple_2->setFont(font6);
-        lblDealerCardsSimple = new QLabel(lblDealerCardsSimple_2);
-        lblDealerCardsSimple->setObjectName("lblDealerCardsSimple");
-        lblDealerCardsSimple->setGeometry(QRect(10, 30, 38, 27));
-        lblDealerCardsSimple->setFont(font6);
-        lblDealerCardsSimple->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        lblDealerTotalSimple = new QLabel(lblDealerCardsSimple_2);
-        lblDealerTotalSimple->setObjectName("lblDealerTotalSimple");
-        lblDealerTotalSimple->setGeometry(QRect(10, 70, 105, 27));
-        lblDealerTotalSimple->setFont(font6);
-
-        gridLayout_3->addWidget(lblDealerCardsSimple_2, 1, 0, 1, 1);
-
-        lblDealerCardsSimple_3 = new QGroupBox(groupBox);
-        lblDealerCardsSimple_3->setObjectName("lblDealerCardsSimple_3");
-        lblDealerCardsSimple_3->setMinimumSize(QSize(0, 100));
-        lblDealerCardsSimple_3->setFont(font6);
-        lblPlayerCardsSimple = new QLabel(lblDealerCardsSimple_3);
-        lblPlayerCardsSimple->setObjectName("lblPlayerCardsSimple");
-        lblPlayerCardsSimple->setGeometry(QRect(10, 30, 38, 27));
-        lblPlayerCardsSimple->setFont(font6);
-        lblPlayerCardsSimple->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        lblPlayerTotalSimple = new QLabel(lblDealerCardsSimple_3);
-        lblPlayerTotalSimple->setObjectName("lblPlayerTotalSimple");
-        lblPlayerTotalSimple->setGeometry(QRect(10, 70, 111, 27));
-        lblPlayerTotalSimple->setFont(font6);
-
-        gridLayout_3->addWidget(lblDealerCardsSimple_3, 1, 2, 1, 1);
+        gridLayout_4->addWidget(btnHit, 6, 0, 1, 2);
 
         btnStand = new QPushButton(groupBox);
         btnStand->setObjectName("btnStand");
-        sizePolicy2.setHeightForWidth(btnStand->sizePolicy().hasHeightForWidth());
-        btnStand->setSizePolicy(sizePolicy2);
+        sizePolicy6.setHeightForWidth(btnStand->sizePolicy().hasHeightForWidth());
+        btnStand->setSizePolicy(sizePolicy6);
         btnStand->setMinimumSize(QSize(0, 45));
-        QFont font7;
-        font7.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font7.setPointSize(18);
-        btnStand->setFont(font7);
+        QFont font8;
+        font8.setFamilies({QString::fromUtf8("Comic Sans MS")});
+        font8.setPointSize(18);
+        btnStand->setFont(font8);
 
-        gridLayout_3->addWidget(btnStand, 4, 1, 1, 1);
+        gridLayout_4->addWidget(btnStand, 6, 2, 1, 1);
 
-        btnSplit = new QPushButton(groupBox);
-        btnSplit->setObjectName("btnSplit");
-        sizePolicy2.setHeightForWidth(btnSplit->sizePolicy().hasHeightForWidth());
-        btnSplit->setSizePolicy(sizePolicy2);
-        btnSplit->setMinimumSize(QSize(0, 45));
-        btnSplit->setFont(font5);
-        btnSplit->setIconSize(QSize(20, 50));
+        btnLeaveGame1 = new QPushButton(groupBox);
+        btnLeaveGame1->setObjectName("btnLeaveGame1");
+        sizePolicy5.setHeightForWidth(btnLeaveGame1->sizePolicy().hasHeightForWidth());
+        btnLeaveGame1->setSizePolicy(sizePolicy5);
+        btnLeaveGame1->setMinimumSize(QSize(0, 45));
+        btnLeaveGame1->setFont(font6);
 
-        gridLayout_3->addWidget(btnSplit, 4, 2, 1, 1);
+        gridLayout_4->addWidget(btnLeaveGame1, 6, 3, 1, 2);
 
-        lblGameIdSimple = new QLabel(groupBox);
-        lblGameIdSimple->setObjectName("lblGameIdSimple");
-        QSizePolicy sizePolicy3(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Minimum);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(lblGameIdSimple->sizePolicy().hasHeightForWidth());
-        lblGameIdSimple->setSizePolicy(sizePolicy3);
-        lblGameIdSimple->setMinimumSize(QSize(713, 15));
-        lblGameIdSimple->setMaximumSize(QSize(16777215, 500));
-        lblGameIdSimple->setFont(font4);
-        lblGameIdSimple->setTextFormat(Qt::TextFormat::AutoText);
-        lblGameIdSimple->setScaledContents(true);
-        lblGameIdSimple->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        lblDealerTotal = new QLabel(groupBox);
+        lblDealerTotal->setObjectName("lblDealerTotal");
+        lblDealerTotal->setMinimumSize(QSize(0, 15));
+        lblDealerTotal->setFont(font4);
 
-        gridLayout_3->addWidget(lblGameIdSimple, 0, 0, 1, 3);
+        gridLayout_4->addWidget(lblDealerTotal, 5, 1, 1, 1);
+
+        lblOppName = new QLabel(groupBox);
+        lblOppName->setObjectName("lblOppName");
+        QFont font9;
+        font9.setFamilies({QString::fromUtf8("Comic Sans MS")});
+        font9.setPointSize(12);
+        lblOppName->setFont(font9);
+
+        gridLayout_4->addWidget(lblOppName, 1, 3, 1, 1);
 
 
         horizontalLayout->addWidget(groupBox);
@@ -315,72 +406,77 @@ public:
         stackedWidget->addWidget(pageGameSimple);
         pageGameTable = new QWidget();
         pageGameTable->setObjectName("pageGameTable");
-        btnSplit2 = new QPushButton(pageGameTable);
-        btnSplit2->setObjectName("btnSplit2");
-        btnSplit2->setGeometry(QRect(587, 428, 86, 43));
-        btnSplit2->setFont(font5);
-        btnSplit2->setIconSize(QSize(20, 50));
-        btnHit2 = new QPushButton(pageGameTable);
-        btnHit2->setObjectName("btnHit2");
-        btnHit2->setGeometry(QRect(9, 428, 81, 43));
-        btnHit2->setFont(font5);
-        btnStand2 = new QPushButton(pageGameTable);
-        btnStand2->setObjectName("btnStand2");
-        btnStand2->setGeometry(QRect(202, 428, 100, 43));
-        btnStand2->setFont(font5);
-        grpFinance = new QGroupBox(pageGameTable);
-        grpFinance->setObjectName("grpFinance");
-        grpFinance->setGeometry(QRect(9, 9, 187, 204));
-        QFont font8;
-        font8.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font8.setPointSize(10);
-        font8.setWeight(QFont::Black);
-        grpFinance->setFont(font8);
-        grpFinance->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        lblBalanceValue = new QLabel(grpFinance);
-        lblBalanceValue->setObjectName("lblBalanceValue");
-        lblBalanceValue->setGeometry(QRect(30, 30, 63, 20));
-        lblTotalBetValue = new QLabel(grpFinance);
-        lblTotalBetValue->setObjectName("lblTotalBetValue");
-        lblTotalBetValue->setGeometry(QRect(30, 50, 63, 20));
-        lblTotalWinValue = new QLabel(grpFinance);
-        lblTotalWinValue->setObjectName("lblTotalWinValue");
-        lblTotalWinValue->setGeometry(QRect(30, 70, 63, 20));
-        grpSeat1 = new QGroupBox(pageGameTable);
-        grpSeat1->setObjectName("grpSeat1");
-        grpSeat1->setGeometry(QRect(300, 280, 151, 101));
-        grpSeat1->setFont(font8);
-        grpSeat1->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        lblSeat1Cards = new QLabel(grpSeat1);
-        lblSeat1Cards->setObjectName("lblSeat1Cards");
-        lblSeat1Cards->setGeometry(QRect(30, 30, 63, 20));
-        lblSeat1Total = new QLabel(grpSeat1);
-        lblSeat1Total->setObjectName("lblSeat1Total");
-        lblSeat1Total->setGeometry(QRect(30, 50, 63, 20));
-        btnLeaveGame2 = new QPushButton(pageGameTable);
-        btnLeaveGame2->setObjectName("btnLeaveGame2");
-        btnLeaveGame2->setGeometry(QRect(9, 477, 161, 43));
-        btnLeaveGame2->setFont(font5);
+        gridLayout_2 = new QGridLayout(pageGameTable);
+        gridLayout_2->setObjectName("gridLayout_2");
+        lblRoomInfo_2 = new QLabel(pageGameTable);
+        lblRoomInfo_2->setObjectName("lblRoomInfo_2");
+        sizePolicy2.setHeightForWidth(lblRoomInfo_2->sizePolicy().hasHeightForWidth());
+        lblRoomInfo_2->setSizePolicy(sizePolicy2);
+        lblRoomInfo_2->setMinimumSize(QSize(713, 50));
+        lblRoomInfo_2->setMaximumSize(QSize(16777215, 500));
+        lblRoomInfo_2->setFont(font2);
+        lblRoomInfo_2->setTextFormat(Qt::TextFormat::AutoText);
+        lblRoomInfo_2->setScaledContents(true);
+        lblRoomInfo_2->setAlignment(Qt::AlignmentFlag::AlignCenter);
+
+        gridLayout_2->addWidget(lblRoomInfo_2, 0, 0, 1, 3);
+
+        tableWidget = new QTableWidget(pageGameTable);
+        if (tableWidget->columnCount() < 4)
+            tableWidget->setColumnCount(4);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(3, __qtablewidgetitem3);
+        if (tableWidget->rowCount() < 3)
+            tableWidget->setRowCount(3);
+        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
+        tableWidget->setVerticalHeaderItem(0, __qtablewidgetitem4);
+        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
+        tableWidget->setVerticalHeaderItem(1, __qtablewidgetitem5);
+        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
+        tableWidget->setVerticalHeaderItem(2, __qtablewidgetitem6);
+        tableWidget->setObjectName("tableWidget");
+        tableWidget->setFont(font9);
+
+        gridLayout_2->addWidget(tableWidget, 1, 0, 1, 3);
+
+        btnNewRound = new QPushButton(pageGameTable);
+        btnNewRound->setObjectName("btnNewRound");
+        btnNewRound->setFont(font7);
+
+        gridLayout_2->addWidget(btnNewRound, 2, 2, 1, 1);
+
         btnSwitchToSimple = new QPushButton(pageGameTable);
         btnSwitchToSimple->setObjectName("btnSwitchToSimple");
-        btnSwitchToSimple->setGeometry(QRect(394, 477, 177, 43));
-        btnSwitchToSimple->setFont(font5);
-        grpDealer = new QGroupBox(pageGameTable);
-        grpDealer->setObjectName("grpDealer");
-        grpDealer->setGeometry(QRect(587, 9, 97, 84));
-        grpDealer->setFont(font8);
-        grpDealer->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        gridLayout_2 = new QGridLayout(grpDealer);
-        gridLayout_2->setObjectName("gridLayout_2");
-        lblDealerCardsTable = new QLabel(grpDealer);
-        lblDealerCardsTable->setObjectName("lblDealerCardsTable");
+        btnSwitchToSimple->setMinimumSize(QSize(0, 45));
+        btnSwitchToSimple->setFont(font7);
 
-        gridLayout_2->addWidget(lblDealerCardsTable, 0, 0, 1, 1);
+        gridLayout_2->addWidget(btnSwitchToSimple, 3, 2, 1, 1);
 
-        lblDealerTotalTable = new QLabel(grpDealer);
-        lblDealerTotalTable->setObjectName("lblDealerTotalTable");
+        btnHit2 = new QPushButton(pageGameTable);
+        btnHit2->setObjectName("btnHit2");
+        btnHit2->setFont(font7);
 
-        gridLayout_2->addWidget(lblDealerTotalTable, 1, 0, 1, 1);
+        gridLayout_2->addWidget(btnHit2, 4, 0, 1, 1);
+
+        btnStand2 = new QPushButton(pageGameTable);
+        btnStand2->setObjectName("btnStand2");
+        btnStand2->setMinimumSize(QSize(0, 45));
+        btnStand2->setFont(font7);
+
+        gridLayout_2->addWidget(btnStand2, 4, 1, 1, 1);
+
+        btnLeaveGame2 = new QPushButton(pageGameTable);
+        btnLeaveGame2->setObjectName("btnLeaveGame2");
+        btnLeaveGame2->setMinimumSize(QSize(0, 45));
+        btnLeaveGame2->setFont(font7);
+
+        gridLayout_2->addWidget(btnLeaveGame2, 4, 2, 1, 1);
 
         stackedWidget->addWidget(pageGameTable);
         pageJoinRoom = new QWidget();
@@ -389,35 +485,34 @@ public:
         verticalLayout_3->setObjectName("verticalLayout_3");
         label_3 = new QLabel(pageJoinRoom);
         label_3->setObjectName("label_3");
-        QFont font9;
-        font9.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font9.setPointSize(26);
-        font9.setWeight(QFont::ExtraBold);
-        label_3->setFont(font9);
+        QFont font10;
+        font10.setFamilies({QString::fromUtf8("Comic Sans MS")});
+        font10.setPointSize(26);
+        font10.setWeight(QFont::ExtraBold);
+        label_3->setFont(font10);
         label_3->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         verticalLayout_3->addWidget(label_3);
 
         tblRooms = new QTableWidget(pageJoinRoom);
-        if (tblRooms->columnCount() < 3)
-            tblRooms->setColumnCount(3);
-        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-        __qtablewidgetitem->setFont(font4);
-        tblRooms->setHorizontalHeaderItem(0, __qtablewidgetitem);
-        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-        __qtablewidgetitem1->setFont(font4);
-        tblRooms->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-        __qtablewidgetitem2->setFont(font4);
-        tblRooms->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        if (tblRooms->columnCount() < 4)
+            tblRooms->setColumnCount(4);
+        QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
+        __qtablewidgetitem7->setFont(font6);
+        tblRooms->setHorizontalHeaderItem(0, __qtablewidgetitem7);
+        QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
+        __qtablewidgetitem8->setFont(font6);
+        tblRooms->setHorizontalHeaderItem(1, __qtablewidgetitem8);
+        QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
+        __qtablewidgetitem9->setFont(font6);
+        tblRooms->setHorizontalHeaderItem(2, __qtablewidgetitem9);
+        QTableWidgetItem *__qtablewidgetitem10 = new QTableWidgetItem();
+        tblRooms->setHorizontalHeaderItem(3, __qtablewidgetitem10);
         if (tblRooms->rowCount() < 3)
             tblRooms->setRowCount(3);
         tblRooms->setObjectName("tblRooms");
         tblRooms->setMaximumSize(QSize(16777215, 16777177));
-        QFont font10;
-        font10.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font10.setPointSize(12);
-        tblRooms->setFont(font10);
+        tblRooms->setFont(font9);
         tblRooms->setFrameShape(QFrame::Shape::NoFrame);
         tblRooms->setFrameShadow(QFrame::Shadow::Plain);
         tblRooms->setLineWidth(9);
@@ -426,13 +521,15 @@ public:
         tblRooms->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
         tblRooms->setSizeAdjustPolicy(QAbstractScrollArea::SizeAdjustPolicy::AdjustIgnored);
         tblRooms->setAlternatingRowColors(false);
+        tblRooms->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
+        tblRooms->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
         tblRooms->setShowGrid(true);
         tblRooms->setGridStyle(Qt::PenStyle::SolidLine);
         tblRooms->setSortingEnabled(true);
         tblRooms->setWordWrap(true);
-        tblRooms->setCornerButtonEnabled(true);
+        tblRooms->setCornerButtonEnabled(false);
         tblRooms->setRowCount(3);
-        tblRooms->setColumnCount(3);
+        tblRooms->setColumnCount(4);
         tblRooms->horizontalHeader()->setVisible(true);
         tblRooms->horizontalHeader()->setCascadingSectionResizes(true);
         tblRooms->horizontalHeader()->setMinimumSectionSize(60);
@@ -448,36 +545,54 @@ public:
 
         verticalLayout_3->addWidget(tblRooms);
 
-        btnJoinSelected = new QPushButton(pageJoinRoom);
-        btnJoinSelected->setObjectName("btnJoinSelected");
-        btnJoinSelected->setEnabled(true);
-        sizePolicy2.setHeightForWidth(btnJoinSelected->sizePolicy().hasHeightForWidth());
-        btnJoinSelected->setSizePolicy(sizePolicy2);
-        btnJoinSelected->setMinimumSize(QSize(0, 50));
+        join_room = new QPushButton(pageJoinRoom);
+        join_room->setObjectName("join_room");
+        join_room->setEnabled(false);
+        sizePolicy6.setHeightForWidth(join_room->sizePolicy().hasHeightForWidth());
+        join_room->setSizePolicy(sizePolicy6);
+        join_room->setMinimumSize(QSize(0, 50));
         QFont font11;
         font11.setFamilies({QString::fromUtf8("Comic Sans MS")});
         font11.setPointSize(19);
         font11.setBold(false);
-        btnJoinSelected->setFont(font11);
+        join_room->setFont(font11);
 
-        verticalLayout_3->addWidget(btnJoinSelected);
+        verticalLayout_3->addWidget(join_room);
 
         btnBackFromJoin = new QPushButton(pageJoinRoom);
         btnBackFromJoin->setObjectName("btnBackFromJoin");
-        sizePolicy2.setHeightForWidth(btnBackFromJoin->sizePolicy().hasHeightForWidth());
-        btnBackFromJoin->setSizePolicy(sizePolicy2);
+        btnBackFromJoin->setEnabled(false);
+        sizePolicy6.setHeightForWidth(btnBackFromJoin->sizePolicy().hasHeightForWidth());
+        btnBackFromJoin->setSizePolicy(sizePolicy6);
         btnBackFromJoin->setMinimumSize(QSize(0, 50));
-        btnBackFromJoin->setFont(font5);
+        btnBackFromJoin->setFont(font7);
 
         verticalLayout_3->addWidget(btnBackFromJoin);
+
+        Refresh = new QPushButton(pageJoinRoom);
+        Refresh->setObjectName("Refresh");
+        Refresh->setEnabled(false);
+        sizePolicy6.setHeightForWidth(Refresh->sizePolicy().hasHeightForWidth());
+        Refresh->setSizePolicy(sizePolicy6);
+        Refresh->setMinimumSize(QSize(0, 50));
+        Refresh->setFont(font7);
+
+        verticalLayout_3->addWidget(Refresh);
 
         stackedWidget->addWidget(pageJoinRoom);
         pageLobby = new QWidget();
         pageLobby->setObjectName("pageLobby");
-        verticalLayout = new QVBoxLayout(pageLobby);
-        verticalLayout->setObjectName("verticalLayout");
+        gridLayout = new QGridLayout(pageLobby);
+        gridLayout->setObjectName("gridLayout");
+        connection = new QLabel(pageLobby);
+        connection->setObjectName("connection");
+        connection->setMinimumSize(QSize(15, 15));
+
+        gridLayout->addWidget(connection, 0, 0, 1, 1);
+
         label = new QLabel(pageLobby);
         label->setObjectName("label");
+        label->setMinimumSize(QSize(0, 250));
         QFont font12;
         font12.setFamilies({QString::fromUtf8("Comic Sans MS")});
         font12.setPointSize(44);
@@ -488,44 +603,60 @@ public:
         label->setScaledContents(true);
         label->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
-        verticalLayout->addWidget(label);
+        gridLayout->addWidget(label, 1, 0, 1, 1);
 
-        btnGoCreate = new QPushButton(pageLobby);
-        btnGoCreate->setObjectName("btnGoCreate");
-        btnGoCreate->setMinimumSize(QSize(0, 50));
+        txtName = new QLineEdit(pageLobby);
+        txtName->setObjectName("txtName");
+        txtName->setMinimumSize(QSize(0, 50));
         QFont font13;
         font13.setFamilies({QString::fromUtf8("Comic Sans MS")});
         font13.setPointSize(19);
+        txtName->setFont(font13);
+
+        gridLayout->addWidget(txtName, 2, 0, 1, 1);
+
+        btnGoCreate = new QPushButton(pageLobby);
+        btnGoCreate->setObjectName("btnGoCreate");
+        btnGoCreate->setEnabled(false);
+        btnGoCreate->setMinimumSize(QSize(0, 50));
         btnGoCreate->setFont(font13);
 
-        verticalLayout->addWidget(btnGoCreate);
+        gridLayout->addWidget(btnGoCreate, 3, 0, 1, 1);
 
         btnGoJoin = new QPushButton(pageLobby);
         btnGoJoin->setObjectName("btnGoJoin");
         btnGoJoin->setMinimumSize(QSize(0, 50));
         btnGoJoin->setFont(font13);
 
-        verticalLayout->addWidget(btnGoJoin);
+        gridLayout->addWidget(btnGoJoin, 4, 0, 1, 1);
+
+        History = new QPushButton(pageLobby);
+        History->setObjectName("History");
+        History->setMinimumSize(QSize(0, 50));
+        History->setFont(font13);
+
+        gridLayout->addWidget(History, 5, 0, 1, 1);
 
         stackedWidget->addWidget(pageLobby);
 
-        verticalLayout_4->addWidget(stackedWidget);
+        gridLayout_6->addWidget(stackedWidget, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 800, 33));
+        menubar->setGeometry(QRect(0, 0, 785, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
         MainWindow->setStatusBar(statusbar);
 #if QT_CONFIG(shortcut)
-        lblGameIdSimple->setBuddy(lblGameIdSimple);
+        lblRoomInfo->setBuddy(lblRoomInfo);
+        lblRoomInfo_2->setBuddy(lblRoomInfo);
 #endif // QT_CONFIG(shortcut)
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(1);
+        stackedWidget->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -541,45 +672,65 @@ public:
         btnCreateRoom->setText(QCoreApplication::translate("MainWindow", "CREAT", nullptr));
         btnBackFromCreate->setText(QCoreApplication::translate("MainWindow", "BACK", nullptr));
         groupBox->setTitle(QString());
-        btnSwitchToTable->setText(QCoreApplication::translate("MainWindow", "TABLE VIEW", nullptr));
+        lblRoomInfo->setText(QCoreApplication::translate("MainWindow", "ROOM ID :       ", nullptr));
+        lblStatus->setText(QCoreApplication::translate("MainWindow", "STATUS : WAITING", nullptr));
+        groupBox_player1->setTitle(QCoreApplication::translate("MainWindow", "YOU ", nullptr));
+        lblPlayerTotal->setText(QCoreApplication::translate("MainWindow", "TOTAL :  ", nullptr));
+        groupBox_player2->setTitle(QString());
+        lblOppTotal->setText(QCoreApplication::translate("MainWindow", "TOTAL:   ", nullptr));
+        lblPlayerCard1->setText(QString());
+        lblPlayerCard2->setText(QString());
+        groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "DEALER", nullptr));
+        lblDealerCard1->setText(QString());
+        lblDealerCard3->setText(QString());
+        lblDealerCard2->setText(QString());
+        lblOppCard2->setText(QString());
+        lblOppCard1->setText(QString());
+        btnSwitchToTable->setText(QCoreApplication::translate("MainWindow", "Switch to Table", nullptr));
+        btnNewRound_2->setText(QCoreApplication::translate("MainWindow", "NEW ROUND", nullptr));
         btnHit->setText(QCoreApplication::translate("MainWindow", "HIT", nullptr));
-        btnLeaveGame1->setText(QCoreApplication::translate("MainWindow", "LEAVE/BACK", nullptr));
-        lblDealerCardsSimple_2->setTitle(QCoreApplication::translate("MainWindow", "Dealer", nullptr));
-        lblDealerCardsSimple->setText(QCoreApplication::translate("MainWindow", "?,?", nullptr));
-        lblDealerTotalSimple->setText(QCoreApplication::translate("MainWindow", "DealerTotal : 0", nullptr));
-        lblDealerCardsSimple_3->setTitle(QCoreApplication::translate("MainWindow", "Player", nullptr));
-        lblPlayerCardsSimple->setText(QCoreApplication::translate("MainWindow", "?,?", nullptr));
-        lblPlayerTotalSimple->setText(QCoreApplication::translate("MainWindow", "PlayerTotal : 0", nullptr));
         btnStand->setText(QCoreApplication::translate("MainWindow", "STAND", nullptr));
-        btnSplit->setText(QCoreApplication::translate("MainWindow", "SPLIT", nullptr));
-        lblGameIdSimple->setText(QCoreApplication::translate("MainWindow", "GameId:", nullptr));
-        btnSplit2->setText(QCoreApplication::translate("MainWindow", "SPLIT", nullptr));
+        btnLeaveGame1->setText(QCoreApplication::translate("MainWindow", "LEAVE/BACK", nullptr));
+        lblDealerTotal->setText(QCoreApplication::translate("MainWindow", "DEALER TOTAL :      ", nullptr));
+        lblOppName->setText(QCoreApplication::translate("MainWindow", "lblOppName", nullptr));
+        lblRoomInfo_2->setText(QCoreApplication::translate("MainWindow", "ROOM ID :       ", nullptr));
+        QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
+        ___qtablewidgetitem->setText(QCoreApplication::translate("MainWindow", "TOTAL", nullptr));
+        QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
+        ___qtablewidgetitem1->setText(QCoreApplication::translate("MainWindow", "CARDS", nullptr));
+        QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
+        ___qtablewidgetitem2->setText(QCoreApplication::translate("MainWindow", "New Column", nullptr));
+        QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
+        ___qtablewidgetitem3->setText(QCoreApplication::translate("MainWindow", "STOOD", nullptr));
+        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->verticalHeaderItem(0);
+        ___qtablewidgetitem4->setText(QCoreApplication::translate("MainWindow", "New Row", nullptr));
+        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->verticalHeaderItem(1);
+        ___qtablewidgetitem5->setText(QCoreApplication::translate("MainWindow", "DEALER", nullptr));
+        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->verticalHeaderItem(2);
+        ___qtablewidgetitem6->setText(QCoreApplication::translate("MainWindow", "PLAYER1", nullptr));
+        btnNewRound->setText(QCoreApplication::translate("MainWindow", "NEW ROUND", nullptr));
+        btnSwitchToSimple->setText(QCoreApplication::translate("MainWindow", "SIMPLE VIEW", nullptr));
         btnHit2->setText(QCoreApplication::translate("MainWindow", "HIT", nullptr));
         btnStand2->setText(QCoreApplication::translate("MainWindow", "STAND", nullptr));
-        grpFinance->setTitle(QCoreApplication::translate("MainWindow", "Finance", nullptr));
-        lblBalanceValue->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
-        lblTotalBetValue->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
-        lblTotalWinValue->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
-        grpSeat1->setTitle(QCoreApplication::translate("MainWindow", "YOU", nullptr));
-        lblSeat1Cards->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
-        lblSeat1Total->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         btnLeaveGame2->setText(QCoreApplication::translate("MainWindow", "LEAVE/BACK", nullptr));
-        btnSwitchToSimple->setText(QCoreApplication::translate("MainWindow", "SIMPLE VIEW", nullptr));
-        grpDealer->setTitle(QCoreApplication::translate("MainWindow", "Dealer", nullptr));
-        lblDealerCardsTable->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
-        lblDealerTotalTable->setText(QCoreApplication::translate("MainWindow", "TextLabel :", nullptr));
         label_3->setText(QCoreApplication::translate("MainWindow", "JOIN ROOM", nullptr));
-        QTableWidgetItem *___qtablewidgetitem = tblRooms->horizontalHeaderItem(0);
-        ___qtablewidgetitem->setText(QCoreApplication::translate("MainWindow", "SERVER ID", nullptr));
-        QTableWidgetItem *___qtablewidgetitem1 = tblRooms->horizontalHeaderItem(1);
-        ___qtablewidgetitem1->setText(QCoreApplication::translate("MainWindow", "NAME", nullptr));
-        QTableWidgetItem *___qtablewidgetitem2 = tblRooms->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QCoreApplication::translate("MainWindow", "PLAYERS", nullptr));
-        btnJoinSelected->setText(QCoreApplication::translate("MainWindow", "Join", nullptr));
+        QTableWidgetItem *___qtablewidgetitem7 = tblRooms->horizontalHeaderItem(0);
+        ___qtablewidgetitem7->setText(QCoreApplication::translate("MainWindow", "ROOM ID", nullptr));
+        QTableWidgetItem *___qtablewidgetitem8 = tblRooms->horizontalHeaderItem(1);
+        ___qtablewidgetitem8->setText(QCoreApplication::translate("MainWindow", "HOST NAME", nullptr));
+        QTableWidgetItem *___qtablewidgetitem9 = tblRooms->horizontalHeaderItem(2);
+        ___qtablewidgetitem9->setText(QCoreApplication::translate("MainWindow", "STATUS", nullptr));
+        QTableWidgetItem *___qtablewidgetitem10 = tblRooms->horizontalHeaderItem(3);
+        ___qtablewidgetitem10->setText(QCoreApplication::translate("MainWindow", "PLAYER (1/2)", nullptr));
+        join_room->setText(QCoreApplication::translate("MainWindow", "Join Room", nullptr));
         btnBackFromJoin->setText(QCoreApplication::translate("MainWindow", "Back", nullptr));
+        Refresh->setText(QCoreApplication::translate("MainWindow", "Refresh", nullptr));
+        connection->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "BLACK JACK", nullptr));
-        btnGoCreate->setText(QCoreApplication::translate("MainWindow", "CREAT GAME", nullptr));
+        txtName->setText(QCoreApplication::translate("MainWindow", "NAME:", nullptr));
+        btnGoCreate->setText(QCoreApplication::translate("MainWindow", "CREATE GAME", nullptr));
         btnGoJoin->setText(QCoreApplication::translate("MainWindow", "JOIN GAME", nullptr));
+        History->setText(QCoreApplication::translate("MainWindow", "HISTORY", nullptr));
     } // retranslateUi
 
 };

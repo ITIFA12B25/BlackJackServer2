@@ -1,45 +1,55 @@
 #include <QCoreApplication>
 #include <QTcpServer>
 #include <QTcpSocket>
-#include <QHostAddress>
 #include <QDebug>
 
-#include "gamesession.h"
 #include "gamemanager.h"
+#include "gamesession.h"
 
 int main(int argc, char *argv[])
 {
-    // Qt-Konsolenanwendung starten (Event-Loop für TCP notwendig).
+    // Qt Console-App starten (Event-Loop läuft am Ende mit a.exec())
     QCoreApplication a(argc, argv);
 
-    // TCP-Server + zentrale Spielverwaltung
+    // TCP Server-Objekt (nimmt Verbindungen an)
     QTcpServer server;
+
+    // Zentrale Spiellogik / Room-Verwaltung
     GameManager manager;
 
-    // Wird ausgelöst, wenn ein neuer Client verbindet.
-    QObject::connect(&server, &QTcpServer::newConnection, [&]() {
-        while (server.hasPendingConnections()) {
-            QTcpSocket* socket = server.nextPendingConnection();
-            qDebug() << "Client connected from" << socket->peerAddress().toString()
-                     << "port" << socket->peerPort();
+    // Port für die Verbindung (Client muss den gleichen Port nutzen)
+    const quint16 port = 4242;
 
-            // Eigene Session pro Client (Parent = server => wird automatisch aufgeräumt)
-            new GameSession(socket, &manager, &server);
+    // ------------------------------------------------------------
+    // Server starten (Console-App)
+    // Lauscht auf allen Netzwerkkarten (Any) und dem Port
+    // ------------------------------------------------------------
+    if (!server.listen(QHostAddress::Any, port)) {
+        // Wenn Listen nicht geht: Fehler ausgeben und Programm beenden
+        qDebug() << "Listen failed:" << server.errorString();
+        return 1;
+    }
+
+    // Info in der Konsole, dass Server läuft
+    qDebug() << "Server listening on port" << port;
+
+    // ------------------------------------------------------------
+    // Neue Clients akzeptieren
+    // newConnection wird ausgelöst, wenn ein Client connectet
+    // ------------------------------------------------------------
+    QObject::connect(&server, &QTcpServer::newConnection, [&](){
+        // Mehrere Clients können gleichzeitig warten (pending)
+        while (server.hasPendingConnections()) {
+            // Nächsten Client-Socket holen
+            QTcpSocket* sock = server.nextPendingConnection();
+            qDebug() << "New client connected";
+
+            // Für jeden Client eine eigene Session erzeugen
+            // Session verbindet readyRead/disconnected intern
+            new GameSession(sock, &manager, &a);
         }
     });
 
-    // Server starten
-    const quint16 port = 4242;
-
-    if (!server.listen(QHostAddress::AnyIPv4, port)) {
-        qCritical() << "Server konnte nicht starten auf Port" << port
-                    << "-" << server.errorString();
-        return 1; // ohne laufenden Server macht Event-Loop keinen Sinn
-    }
-
-    qDebug() << "Server hört auf" << server.serverAddress().toString()
-             << "Port" << server.serverPort();
-
-    // Event-Loop starten
+    // Event-Loop starten (Server läuft solange, bis Programm beendet wird)
     return a.exec();
 }

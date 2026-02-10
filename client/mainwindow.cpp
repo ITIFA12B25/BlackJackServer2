@@ -1,134 +1,426 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QFile>
 #include <QJsonDocument>
-#include <QJsonObject>
+#include <QJsonArray>
+#include <QDebug>
+#include <QWidget>
+#include <QLabel>
+#include <QLineEdit>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QAbstractItemView>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+// ------------------------------------------------------------
+// Hilfsfunktion: Aktiviert Root + Parents + Children
+// Zweck: Manche Widgets werden (z.B. durch stackedWidget) deaktiviert.
+// Hinweis: Danach Buttons/Controls gezielt per UI-State setzen.
+// ------------------------------------------------------------
+static void forceEnableAll(QWidget* root)
 {
-    // UI aus der .ui-Datei initialisieren
+    if (!root) return;
+
+    // Parents bis zum Top-Widget aktivieren
+    QWidget* p = root;
+    while (p) {
+        p->setEnabled(true);
+        p = p->parentWidget();
+    }
+
+    // Root + alle Children aktivieren
+    root->setEnabled(true);
+    const auto children = root->findChildren<QWidget*>();
+    for (QWidget* w : children)
+        w->setEnabled(true);
+}
+
+// ------------------------------------------------------------
+// Karten-Resource:
+// - Key "AH" -> Pfad zur PNG in Qt-Resources
+// - Key "?"  -> back.png (verdeckte Karte)
+// ------------------------------------------------------------
+#include <QFile>
+
+// Wandelt Karten-Key (z.B. "AH") in Resource-Pfad um
+static QString cardKeyToResourcePath(const QString& key)
+{
+    // Verdeckte Karte (z.B. Dealer zweite Karte)
+    if (key.isEmpty() || key == "?") {
+        // Variante 1: Projektstruktur ":/cards/assets/cards/back.png"
+        const QString p2 = ":/cards/assets/cards/back.png";
+        if (QFile::exists(p2)) return p2;
+
+        // Variante 2: ältere Struktur ":/cards/back.png"
+        const QString p1 = ":/cards/back.png";
+        if (QFile::exists(p1)) return p1;
+
+        return QString(); // nicht gefunden
+    }
+
+    // Variante 1: ":/cards/AH.png"
+    const QString p1 = QString(":/cards/%1.png").arg(key);
+    if (QFile::exists(p1)) return p1;
+
+    // Variante 2: ":/cards/assets/cards/AH.png"
+    const QString p2 = QString(":/cards/assets/cards/%1.png").arg(key);
+    if (QFile::exists(p2)) return p2;
+
+    return QString(); // nicht gefunden
+}
+
+// Setzt ein Kartenbild in ein QLabel (skaliert, Seitenverhältnis bleibt)
+// Wenn Bild nicht existiert: Text "NO IMG"
+static void setCardLabel(QLabel* label, const QString& key, const QSize& targetSize)
+{
+    if (!label) return;
+
+    const QString path = cardKeyToResourcePath(key);
+    if (path.isEmpty()) {
+        label->setText("NO IMG");
+        label->setPixmap(QPixmap());
+        return;
+    }
+
+    QPixmap px(path);
+    if (px.isNull()) {
+        label->setText("NO IMG");
+        label->setPixmap(QPixmap());
+        return;
+    }
+
+    label->setText("");
+    label->setPixmap(px.scaled(targetSize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+}
+
+// Leert eine Kartenanzeige (Text + Pixmap)
+static void clearCardLabel(QLabel* label)
+{
+    if (!label) return;
+    label->clear();
+    label->setPixmap(QPixmap());
+}
+
+// ------------------------------------------------------------
+// Debug: Enabled/Disabled Watcher (EventFilter)
+// Zweck: finden, warum Widgets deaktiviert werden
+// ------------------------------------------------------------
+void MainWindow::installEnabledWatcher(QWidget *root)
+{
+    if (!root) return;
+
+    // Root überwachen
+    root->installEventFilter(this);
+
+    // Alle Child-Widgets ebenfalls überwachen
+    const auto children = root->findChildren<QWidget*>();
+    for (QWidget *w : children)
+        w->installEventFilter(this);
+}
+
+// Reagiert auf EnabledChange-Events und schreibt ins Debug-Log
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if (event->type() == QEvent::EnabledChange) {
+        if (auto *w = qobject_cast<QWidget*>(watched)) {
+            qDebug().noquote()
+            << "[EnabledChange]"
+            << (w->isEnabled() ? "ENABLED" : "DISABLED")
+            << "objectName=" << w->objectName();
+        }
+    }
+    return QMainWindow::eventFilter(watched, event);
+}
+
+// ------------------------------------------------------------
+// Safe Widget Zugriff
+// Hinweis: findChild sucht im ganzen MainWindow; kann nullptr zurückgeben.
+// ------------------------------------------------------------
+QLabel* MainWindow::lbl(const char* objectName) const
+{
+    return this->findChild<QLabel*>(objectName);
+}
+
+QLineEdit* MainWindow::edit(const char* objectName) const
+{
+    return this->findChild<QLineEdit*>(objectName);
+}
+
+QTableWidget* MainWindow::tbl(const char* objectName) const
+{
+    return this->findChild<QTableWidget*>(objectName);
+}
+
+// ------------------------------------------------------------
+// Konstruktor: UI initialisieren, Signals/Slots verbinden, Socket starten
+// ------------------------------------------------------------
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
     ui->setupUi(this);
 
-    // Start: immer Lobby anzeigen
-    ui->stackedWidget->setCurrentWidget(ui->pageLobby);
+    // Debug-Watcher aktivieren (nur zum Testen)
+    installEnabledWatcher(ui->centralwidget);
 
-    // Lobby -> Join
+    // Sicherstellen, dass UI nicht global disabled bleibt
+    this->setEnabled(true);
+    forceEnableAll(ui->centralwidget);
+
+    // Join-Tabelle: ganze Zeile auswählen (nicht einzelne Zelle)
+    ui->tblRooms->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tblRooms->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    // Startseite: Lobby
+    enterLobby();
+
+    // ---------------- Navigation (Seitenwechsel) ----------------
     connect(ui->btnGoJoin, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageJoinRoom);
+        enterJoinRoom();
     });
 
-    // Lobby -> Create
-    connect(ui->btnGoCreate, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageCreateRoom);
-    });
-    //Creat-> Join ->GameSimple
-    connect(ui->btnCreateRoom, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageGameSimple);
-        sendJson(QJsonObject{{"type","create"}});
-    });
-    // CreateRoom -> Back -> Lobby
-    connect(ui->btnBackFromCreate, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageLobby);
-    });
-
-    // JoinRoom -> Back -> Lobby
     connect(ui->btnBackFromJoin, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageLobby);
+        enterLobby();
     });
 
-    // GameSimple -> Leave -> Lobby
-    connect(ui->btnLeaveGame1, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageLobby);
+    // ---------------- Create Room ----------------
+    // Hinweis: Server bekommt "create_room" + player name
+    connect(ui->btnGoCreate, &QPushButton::clicked, this, [this]{
+        QLineEdit* nameEdit = edit("txtName");
+        const QString name = nameEdit ? nameEdit->text().trimmed() : QString();
+
+        m_playerName = name.isEmpty() ? "Player" : name;
+
+        // Achtung: sendJson schreibt direkt auf Socket (wenn noch nicht verbunden,
+        // puffert Qt i.d.R., aber sauberer wäre: erst connectToHost, dann senden)
+        sendJson(QJsonObject{
+            {"type","create_room"},
+            {"name", m_playerName}
+        });
+
+        // Socket-Signale (Verbindung / Daten / Fehler)
+        connect(&m_socket, &QTcpSocket::connected,
+                this, &MainWindow::onConnected);
+
+        connect(&m_socket, &QTcpSocket::disconnected,
+                this, &MainWindow::onDisconnected);
+
+        connect(&m_socket, &QTcpSocket::readyRead,
+                this, &MainWindow::onReadyRead);
+
+        connect(&m_socket, &QTcpSocket::errorOccurred,
+                this, &MainWindow::onErrorOccurred);
+
+        // State-Text "Connected/Disconnected" live anzeigen
+        connect(&m_socket, &QTcpSocket::stateChanged, this,
+                [this](QAbstractSocket::SocketState st){
+                    if (st == QAbstractSocket::ConnectedState) setConnectionText("Connected");
+                    else setConnectionText("Disconnected");
+                });
+
     });
 
-    // GameTable -> Leave -> Lobby
-    connect(ui->btnLeaveGame2, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageLobby);
-    });
-
-    // GameSimple -> Table View
-    connect(ui->btnSwitchToTable, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageGameTable);
-    });
-
-    // GameTable -> Simple View
-    connect(ui->btnSwitchToSimple, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageGameSimple);
-    });
-    // JoinRoom -> JoinSelected -> nur wenn eine Zeile ausgewählt ist
-    connect(ui->btnJoinSelected, &QPushButton::clicked, this, [this]{
-        const int row = ui->tblRooms->currentRow();
-        if (row < 0) {
-            // Keine Auswahl -> nicht wechseln
+    // ---------------- JoinRoom Auswahl ----------------
+    // Wenn eine Zeile ausgewählt ist, wird der Join-Button aktiviert.
+    connect(ui->tblRooms, &QTableWidget::itemSelectionChanged, this, [this]{
+        const auto ranges = ui->tblRooms->selectedRanges();
+        if (ranges.isEmpty()) {
+            m_selectedRoomId.clear();
+            ui->join_room->setEnabled(false);
             return;
         }
 
-        auto* idItem = ui->tblRooms->item(row, 0);
-        if (!idItem) return;
+        const int row = ranges.first().topRow();
+        QTableWidgetItem* it = ui->tblRooms->item(row, 0); // RoomId in Spalte 0
+        if (!it) {
+            m_selectedRoomId.clear();
+            ui->join_room->setEnabled(false);
+            return;
+        }
 
-        const QString gameId = idItem->text().trimmed();
-        if (gameId.isEmpty()) return;
-
-        ui->stackedWidget->setCurrentWidget(ui->pageGameSimple);
-        sendJson(QJsonObject{{"type","join"}, {"gameId", gameId}});
-        //gameID in simple zeigen
-        ui->lblGameIdSimple->setText(gameId);
-        ui->lblGameIdSimple->setText("creating...");
-
-
+        m_selectedRoomId = it->text().trimmed();
+        ui->join_room->setEnabled(!m_selectedRoomId.isEmpty());
     });
-    // ---------- Button-Connects (Page 4: GameSimple) ----------
-    connect(ui->btnHit, &QPushButton::clicked, this, &MainWindow::onHitClicked);
-    connect(ui->btnStand, &QPushButton::clicked, this, &MainWindow::onStandClicked);
-    connect(ui->btnHit, &QPushButton::clicked, this, &MainWindow::onSplitClicked);
 
-    // ---------- Button-Connects (Page 5: GameTable) ----------
-    connect(ui->btnHit2, &QPushButton::clicked, this, &MainWindow::onHitClicked);
-    connect(ui->btnStand2, &QPushButton::clicked, this, &MainWindow::onStandClicked);
-    connect(ui->btnSplit2, &QPushButton::clicked, this, &MainWindow::onSplitClicked);
+    // Join Button (objectName: join_room)
+    connect(ui->join_room, &QPushButton::clicked, this, [this]{
+        if (m_selectedRoomId.isEmpty()) return;
+
+        QLineEdit* nameEdit = edit("txtName");
+        const QString name = nameEdit ? nameEdit->text().trimmed() : QString();
+
+        m_playerName = name.isEmpty() ? "Player" : name;
+
+        // join_room Nachricht an Server
+        sendJson(QJsonObject{
+            {"type","join_room"},
+            {"roomId", m_selectedRoomId},
+            {"name", m_playerName}
+        });
+    });
+
+    // Refresh (optional): Server soll Liste der Rooms schicken
+    connect(ui->Refresh, &QPushButton::clicked, this, [this]{
+        sendJson(QJsonObject{{"type","list_rooms"}});
+    });
+
+    // ---------------- Switch Views (Simple <-> Table) ----------------
+    connect(ui->btnSwitchToTable, &QPushButton::clicked, this, [this]{
+        enterGameTable();
+    });
 
     connect(ui->btnSwitchToSimple, &QPushButton::clicked, this, [this]{
-        ui->stackedWidget->setCurrentWidget(ui->pageGameSimple);
+        enterGameSimple();
+    });
+
+    // ---------------- Leave Game ----------------
+    // leave_room an Server und zurück zur Lobby
+    connect(ui->btnLeaveGame1, &QPushButton::clicked, this, [this]{
+        sendJson(QJsonObject{{"type","leave_room"}});
+        enterLobby();
     });
 
     connect(ui->btnLeaveGame2, &QPushButton::clicked, this, [this]{
-        // Zurück-Navigation: hier später auf Lobby/Room wechseln
-        ui->stackedWidget->setCurrentWidget(ui->pageCreateRoom);
+        sendJson(QJsonObject{{"type","leave_room"}});
+        enterLobby();
     });
 
-    // ---------- Socket-Connects ----------
-    connect(&m_socket, &QTcpSocket::connected, this, &MainWindow::onConnected);
-    connect(&m_socket, &QTcpSocket::readyRead,  this, &MainWindow::onReadyRead);
+    // ---------------- Game Actions ----------------
+    // Buttons existieren auf beiden Seiten (Simple + Table)
+    connect(ui->btnHit,   &QPushButton::clicked, this, &MainWindow::onHitClicked);
+    connect(ui->btnStand, &QPushButton::clicked, this, &MainWindow::onStandClicked);
+
+    connect(ui->btnHit2,   &QPushButton::clicked, this, &MainWindow::onHitClicked);
+    connect(ui->btnStand2, &QPushButton::clicked, this, &MainWindow::onStandClicked);
+
+    connect(ui->btnNewRound,   &QPushButton::clicked, this, &MainWindow::onNewRoundClicked);
+    connect(ui->btnNewRound_2, &QPushButton::clicked, this, &MainWindow::onNewRoundClicked);
+
+    // Start: NewRound ist deaktiviert, bis Ergebnis kommt
+    ui->btnNewRound->setEnabled(false);
+    ui->btnNewRound_2->setEnabled(false);
+
+    // ---------------- Socket (global) ----------------
+    // Diese connects gelten immer, egal ob Join oder Create
+    connect(&m_socket, &QTcpSocket::connected,     this, &MainWindow::onConnected);
+    connect(&m_socket, &QTcpSocket::readyRead,     this, &MainWindow::onReadyRead);
     connect(&m_socket, &QTcpSocket::errorOccurred, this, &MainWindow::onErrorOccurred);
 
-    // Verbindung zum Server herstellen
+    // Verbindung zum lokalen Server (Port 4242)
     m_socket.connectToHost("127.0.0.1", 4242);
 }
 
 MainWindow::~MainWindow()
 {
-    // UI-Speicher freigeben
     delete ui;
 }
 
+// ------------------------------------------------------------
+// UI States (Seiten + Buttons korrekt setzen)
+// ------------------------------------------------------------
+void MainWindow::setConnectionText(const QString& text)
+{
+    // Label kann auf pageLobby liegen; findChild sucht im ganzen MainWindow
+    if (QLabel* c = lbl("connection")) {
+        c->setText(text);
+    } else {
+        // Wenn es nicht gefunden wird, stimmt objectName im Designer nicht
+        qDebug() << "Connection label not found (objectName must be 'connection')";
+    }
+}
+
+void MainWindow::enterLobby()
+{
+    ui->stackedWidget->setCurrentWidget(ui->pageLobby);
+    forceEnableAll(ui->pageLobby);
+
+    // Text zeigt den aktuellen Socket-State
+    setConnectionText(m_socket.state() == QAbstractSocket::ConnectedState ? "Connected" : "Disconnected");
+}
+
+void MainWindow::resetJoinUi()
+{
+    // Join-Button nur aktiv, wenn Room ausgewählt ist
+    ui->tblRooms->clearSelection();
+    m_selectedRoomId.clear();
+    ui->join_room->setEnabled(false);
+}
+
+void MainWindow::enterJoinRoom()
+{
+    ui->stackedWidget->setCurrentWidget(ui->pageJoinRoom);
+    forceEnableAll(ui->pageJoinRoom);
+    resetJoinUi();
+}
+
+void MainWindow::enterGameSimple()
+{
+    ui->stackedWidget->setCurrentWidget(ui->pageGameSimple);
+    forceEnableAll(ui->pageGameSimple);
+
+    // Simple-Buttons aktivieren
+    ui->btnHit->setEnabled(true);
+    ui->btnStand->setEnabled(true);
+    ui->btnSwitchToTable->setEnabled(true);
+    ui->btnLeaveGame1->setEnabled(true);
+
+    // NewRound in dieser Ansicht erstmal aus
+    ui->btnNewRound_2->setEnabled(false);
+}
+
+void MainWindow::enterGameTable()
+{
+    ui->stackedWidget->setCurrentWidget(ui->pageGameTable);
+    forceEnableAll(ui->pageGameTable);
+
+    // Table-Buttons aktivieren
+    ui->btnHit2->setEnabled(true);
+    ui->btnStand2->setEnabled(true);
+    ui->btnSwitchToSimple->setEnabled(true);
+    ui->btnLeaveGame2->setEnabled(true);
+
+    // NewRound in dieser Ansicht erstmal aus
+    ui->btnNewRound->setEnabled(false);
+
+    // Tabelle initialisieren (falls existiert)
+    if (ui->tableWidget) {
+        ui->tableWidget->setRowCount(3);
+        ui->tableWidget->setColumnCount(4);
+        ui->tableWidget->setHorizontalHeaderLabels({"Player","Cards","Total","Stood"});
+        ui->tableWidget->setVerticalHeaderLabels({"Dealer","You","Opp"});
+    }
+}
+
+// ------------------------------------------------------------
+// Netzwerk / JSON (Client -> Server)
+// ------------------------------------------------------------
 void MainWindow::sendJson(const QJsonObject& obj)
 {
-    // JSON -> Bytes + '\n' (Line-Delimited JSON)
-    QJsonDocument doc(obj);
+    // JSON compact + '\n' als Message-Delimiter
+    const QJsonDocument doc(obj);
     QByteArray data = doc.toJson(QJsonDocument::Compact);
     data.append('\n');
+
     m_socket.write(data);
+    m_socket.flush();
 }
 
 void MainWindow::onConnected()
 {
-    // Verbindung steht
+    setConnectionText("Connected");
+    qDebug() << "Connected";
+}
+
+void MainWindow::onDisconnected()
+{
+    // Verbindung getrennt (Server down / Client getrennt)
+    setConnectionText("Disconnected");
+    qDebug() << "Disconnected";
 }
 
 void MainWindow::onReadyRead()
 {
+    // Pro Nachricht eine Zeile (wie im Server implementiert)
     while (m_socket.canReadLine()) {
         const QByteArray line = m_socket.readLine().trimmed();
         if (line.isEmpty()) continue;
@@ -136,62 +428,267 @@ void MainWindow::onReadyRead()
         const QJsonDocument doc = QJsonDocument::fromJson(line);
         if (!doc.isObject()) continue;
 
-        const QJsonObject obj = doc.object();
-        const QString type = obj.value("type").toString();
-
-        // Nach Create/Join zur GameSimple-Seite wechseln
-        if (type == "created" || type == "joined") {
-            const QString gameId = obj.value("gameId").toString();
-
-            ui->lblGameIdSimple->setText(gameId);
-            ui->stackedWidget->setCurrentWidget(ui->pageGameSimple);
-            continue;
-        }
-
-        // Spielstatus anzeigen (Page 4)
-        if (type == "state") {
-            const int playerTotal = obj.value("playerTotal").toInt();
-            const int dealerTotal = obj.value("dealerTotal").toInt();
-
-            ui->lblPlayerTotalSimple->setText(QString::number(playerTotal));
-            ui->lblDealerTotalSimple->setText(QString::number(dealerTotal));
-
-            // Optional: auch Page 5 updaten (falls sichtbar)
-            ui->lblSeat1Total->setText(QString::number(playerTotal));
-            ui->lblDealerTotalTable->setText(QString::number(dealerTotal));
-            continue;
-        }
-
-        // Ergebnis
-        if (type == "result") {
-            // Hier später Ergebnis-Text anzeigen
-            continue;
-        }
-
-        // Fehler
-        if (type == "error") {
-            // Hier später Fehlermeldung anzeigen
-            continue;
-        }
+        handleServerMessage(doc.object());
     }
 }
 
 void MainWindow::onErrorOccurred(QAbstractSocket::SocketError)
 {
-    // Fehlerbehandlung
+    // Fehler: Status auf disconnected setzen und Debug-Text ausgeben
+    setConnectionText("Disconnected");
+    qDebug() << "Socket error:" << m_socket.errorString();
 }
 
+// ------------------------------------------------------------
+// Server Messages (Model A): room_created / room_ready / state / result / error / rooms_list
+// ------------------------------------------------------------
+void MainWindow::handleServerMessage(const QJsonObject& obj)
+{
+    const QString type = obj.value("type").toString();
+
+    if (type == "room_created") {
+        // Server hat Room erstellt und Sitzplatz vergeben
+        m_roomId = obj.value("roomId").toString();
+        m_seat   = obj.value("seat").toInt();
+
+        // Room-ID in beiden Views anzeigen (falls Labels existieren)
+        if (QLabel* r = lbl("lblRoomInfo"))   r->setText("ROOM ID: " + m_roomId);
+        if (QLabel* r2 = lbl("lblRoomInfo_2")) r2->setText("ROOM ID: " + m_roomId);
+
+        // In Game wechseln
+        enterGameSimple();
+
+        // Status-Text für Player2 warten
+        if (QLabel* s = lbl("status")) s->setText("Waiting for Player2...");
+        return;
+    }
+
+    if (type == "room_ready") {
+        // Zwei Spieler sind da -> Spiel startet
+        enterGameSimple();
+        if (QLabel* s = lbl("status")) s->setText("Game started!");
+        return;
+    }
+
+    if (type == "state") {
+        // Spielstand: UI in beiden Ansichten aktualisieren
+        updateGameSimpleFromState(obj);
+        updateGameTableFromState(obj);
+        return;
+    }
+
+    if (type == "result") {
+        // Runde zu Ende -> NewRound aktiv, Hit/Stand deaktivieren
+        ui->btnNewRound->setEnabled(true);
+        ui->btnNewRound_2->setEnabled(true);
+
+        ui->btnHit->setEnabled(false);
+        ui->btnStand->setEnabled(false);
+        ui->btnHit2->setEnabled(false);
+        ui->btnStand2->setEnabled(false);
+
+        const QString outcome = obj.value("outcome").toString();
+        if (QLabel* s = lbl("status")) s->setText("Result: " + outcome);
+        return;
+    }
+
+    if (type == "error") {
+        // Server meldet Fehler (z.B. join first, no game, etc.)
+        qDebug() << "Server error:" << obj.value("msg").toString();
+        if (QLabel* s = lbl("status")) s->setText("Error: " + obj.value("msg").toString());
+        return;
+    }
+
+    if (type == "rooms_list") {
+        // Liste der verfügbaren Rooms für Join-Seite
+        const QJsonArray rooms = obj.value("rooms").toArray();
+
+        // Tabelle vorbereiten
+        ui->tblRooms->clearContents();
+        ui->tblRooms->setRowCount(rooms.size());
+        ui->tblRooms->setColumnCount(4);
+        ui->tblRooms->setHorizontalHeaderLabels({"RoomId","Host","Phase","Players"});
+
+        // Daten pro Zeile eintragen
+        for (int row = 0; row < rooms.size(); ++row) {
+            const QJsonObject r = rooms[row].toObject();
+
+            const QString roomId  = r.value("roomId").toString();
+            const QString host    = r.value("host").toString();
+            const QString phase   = r.value("phase").toString();
+            const int players     = r.value("players").toInt();
+
+            ui->tblRooms->setItem(row, 0, new QTableWidgetItem(roomId));
+            ui->tblRooms->setItem(row, 1, new QTableWidgetItem(host));
+            ui->tblRooms->setItem(row, 2, new QTableWidgetItem(phase));
+            ui->tblRooms->setItem(row, 3, new QTableWidgetItem(QString("%1/2").arg(players)));
+        }
+
+        // Join erst nach Auswahl erlauben
+        m_selectedRoomId.clear();
+        ui->join_room->setEnabled(false);
+        return;
+    }
+
+}
+
+// ------------------------------------------------------------
+// Game Actions (Client -> Server)
+// ------------------------------------------------------------
 void MainWindow::onHitClicked()
 {
+    // Spieler zieht eine Karte
     sendJson(QJsonObject{{"type","hit"}});
 }
 
 void MainWindow::onStandClicked()
 {
+    // Spieler bleibt stehen
     sendJson(QJsonObject{{"type","stand"}});
 }
 
-void MainWindow::onSplitClicked()
+void MainWindow::onNewRoundClicked()
 {
-    sendJson(QJsonObject{{"type","split"}});
+    // Neue Runde starten
+    sendJson(QJsonObject{{"type","newround"}});
+
+    // Buttons zurücksetzen
+    ui->btnNewRound->setEnabled(false);
+    ui->btnNewRound_2->setEnabled(false);
+
+    ui->btnHit->setEnabled(true);
+    ui->btnStand->setEnabled(true);
+    ui->btnHit2->setEnabled(true);
+    ui->btnStand2->setEnabled(true);
+}
+
+// ------------------------------------------------------------
+// UI Update: GameSimple (Bilder)
+// Erwartete Labels (objectName in .ui):
+// - lblDealerCard1, lblDealerCard2, lblDealerCard3(optional)
+// - lblPlayerCard1, lblPlayerCard2, lblPlayerCard3(optional)
+// - lblOppCard1,    lblOppCard2,    lblOppCard3(optional)
+// Totals optional:
+// - lblDealerTotal, lblPlayerTotal, lblOppTotal
+// ------------------------------------------------------------
+void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
+{
+    // Arrays aus dem Server-State
+    const QJsonArray dealer = state.value("dealerCards").toArray();
+    const QJsonArray p0     = state.value("p0_cards").toArray();
+    const QJsonArray p1     = state.value("p1_cards").toArray();
+
+    // "you" und "opp" hängen vom seat ab
+    const QJsonArray you = (m_seat == 1 ? p1 : p0);
+    const QJsonArray opp = (m_seat == 1 ? p0 : p1);
+
+    // Zielgröße für Bilder (UI-Design)
+    const QSize dealerSize(90, 135);
+    const QSize playerSize(90, 135);
+    const QSize oppSize(90, 135);
+
+    // Labels holen (kann nullptr sein, wenn objectName nicht existiert)
+    QLabel* d1 = lbl("lblDealerCard1");
+    QLabel* d2 = lbl("lblDealerCard2");
+    QLabel* d3 = lbl("lblDealerCard3");
+
+    QLabel* pA = lbl("lblPlayerCard1");
+    QLabel* pB = lbl("lblPlayerCard2");
+    QLabel* pC = lbl("lblPlayerCard3");
+
+    QLabel* o1 = lbl("lblOppCard1");
+    QLabel* o2 = lbl("lblOppCard2");
+    QLabel* o3 = lbl("lblOppCard3");
+
+    // Dealer-Karten setzen (oder leeren)
+    if (dealer.size() > 0) setCardLabel(d1, dealer[0].toString(), dealerSize); else clearCardLabel(d1);
+    if (dealer.size() > 1) setCardLabel(d2, dealer[1].toString(), dealerSize); else clearCardLabel(d2);
+    if (dealer.size() > 2) setCardLabel(d3, dealer[2].toString(), dealerSize); else clearCardLabel(d3);
+
+    // Spieler-Karten
+    if (you.size() > 0) setCardLabel(pA, you[0].toString(), playerSize); else clearCardLabel(pA);
+    if (you.size() > 1) setCardLabel(pB, you[1].toString(), playerSize); else clearCardLabel(pB);
+    if (you.size() > 2) setCardLabel(pC, you[2].toString(), playerSize); else clearCardLabel(pC);
+
+    // Gegner-Karten
+    if (opp.size() > 0) setCardLabel(o1, opp[0].toString(), oppSize); else clearCardLabel(o1);
+    if (opp.size() > 1) setCardLabel(o2, opp[1].toString(), oppSize); else clearCardLabel(o2);
+    if (opp.size() > 2) setCardLabel(o3, opp[2].toString(), oppSize); else clearCardLabel(o3);
+
+    // Totals + Phase
+    const QString phase = state.value("phase").toString();
+    const int dealerTotal = state.value("dealerTotal").toInt();
+
+    const int youTotal = (m_seat == 1 ? state.value("p1_total").toInt() : state.value("p0_total").toInt());
+    const int oppTotal = (m_seat == 1 ? state.value("p0_total").toInt() : state.value("p1_total").toInt());
+
+    if (QLabel* pt = lbl("lblPlayerTotal")) pt->setText(QString("Total: %1").arg(youTotal));
+    if (QLabel* ot = lbl("lblOppTotal"))    ot->setText(QString("Total: %1").arg(oppTotal));
+
+    // Dealer-Total in "playing" verstecken (z.B. zweite Karte verdeckt)
+    if (QLabel* dt = lbl("lblDealerTotal")) {
+        if (phase == "playing") dt->setText("Dealer: ?");
+        else dt->setText(QString("Dealer: %1").arg(dealerTotal));
+    }
+}
+
+// ------------------------------------------------------------
+// UI Update: GameTable (Text)
+// Erwartete Widgets:
+// - tableWidget (QTableWidget)
+// - lblRoomInfo_2 (optional)
+// - status (optional)
+// ------------------------------------------------------------
+void MainWindow::updateGameTableFromState(const QJsonObject& state)
+{
+    // Wenn tableWidget nicht existiert (z.B. UI anders), einfach raus
+    if (!ui->tableWidget) return;
+
+    const QString phase = state.value("phase").toString();
+
+    // Karten aus dem State
+    const QJsonArray dealer = state.value("dealerCards").toArray();
+    const QJsonArray p0     = state.value("p0_cards").toArray();
+    const QJsonArray p1     = state.value("p1_cards").toArray();
+
+    // Namen/Status aus dem State
+    const QString p0name = state.value("p0_name").toString();
+    const QString p1name = state.value("p1_name").toString();
+
+    const bool p0stood = state.value("p0_stood").toBool();
+    const bool p1stood = state.value("p1_stood").toBool();
+
+    // Totals aus dem State
+    const int dealerTotal = state.value("dealerTotal").toInt();
+    const int p0Total     = state.value("p0_total").toInt();
+    const int p1Total     = state.value("p1_total").toInt();
+
+    // Helper: QJsonArray -> "AH, 10S, ..."
+    auto joinCards = [](const QJsonArray& arr){
+        QStringList list;
+        for (const auto& v : arr) list << v.toString();
+        return list.join(", ");
+    };
+
+    const QString dealerCards = joinCards(dealer);
+    const QString p0Cards     = joinCards(p0);
+    const QString p1Cards     = joinCards(p1);
+
+    // Row 0: Dealer
+    ui->tableWidget->setItem(0, 0, new QTableWidgetItem("Dealer"));
+    ui->tableWidget->setItem(0, 1, new QTableWidgetItem(dealerCards));
+    ui->tableWidget->setItem(0, 2, new QTableWidgetItem(phase == "playing" ? "?" : QString::number(dealerTotal)));
+    ui->tableWidget->setItem(0, 3, new QTableWidgetItem("-"));
+
+    // Row 1: Player 0
+    ui->tableWidget->setItem(1, 0, new QTableWidgetItem(p0name.isEmpty() ? "Player0" : p0name));
+    ui->tableWidget->setItem(1, 1, new QTableWidgetItem(p0Cards));
+    ui->tableWidget->setItem(1, 2, new QTableWidgetItem(QString::number(p0Total)));
+    ui->tableWidget->setItem(1, 3, new QTableWidgetItem(p0stood ? "true" : "false"));
+
+    // Row 2: Player 1
+    ui->tableWidget->setItem(2, 0, new QTableWidgetItem(p1name.isEmpty() ? "Player1" : p1name));
+    ui->tableWidget->setItem(2, 1, new QTableWidgetItem(p1Cards));
+    ui->tableWidget->setItem(2, 2, new QTableWidgetItem(QString::number(p1Total)));
+    ui->tableWidget->setItem(2, 3, new QTableWidgetItem(p1stood ? "true" : "false"));
 }

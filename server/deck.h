@@ -4,12 +4,13 @@
 #include "card.h"
 #include <QVector>
 #include <QRandomGenerator>
-
+// Repräsentiert ein Karten-Deck für Blackjack
 class Deck
 {
 public:
+     // Konstruktor: initialisiert ein neues gemischtes Deck
     Deck() { reset(); }
-
+ // Erstellt ein neues 52-Karten-Deck und mischt es
     void reset()
     {
         // Standard-52-Karten-Deck erzeugen
@@ -32,6 +33,7 @@ public:
         m_index = 0;
     }
 
+    // Mischt die Karten (Fisher–Yates)
     void shuffle()
     {
         // Fisher–Yates Shuffle
