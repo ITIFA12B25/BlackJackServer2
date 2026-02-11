@@ -1,3 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS += server client \
-    testclient
+SUBDIRS += server client

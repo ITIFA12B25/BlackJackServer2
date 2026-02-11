@@ -110,6 +110,7 @@ bool GameManager::joinRoom(const QString& roomId, GameSession* joinerSession, co
 
     // Phase auf Playing setzen
     r.phase = GamePhase::Playing;
+      r.currentTurn = 0; // bei starten , Spieler 0 beginnt
     return true;
 }
 

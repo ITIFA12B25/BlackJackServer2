@@ -213,6 +213,7 @@ void GameSession::handleMessage(const QJsonObject& msg)
         // Bust prüfen: >21 => Spieler ist fertig
         if (handValue(me.hand) > 21) {
             me.stood = true;
+            r->currentTurn = 1 - m_seat; // Turn wechseln (bust), du bist darin
             broadcastState(*r);
             tryFinishIfAllDone(*r);
         }
@@ -225,6 +226,7 @@ void GameSession::handleMessage(const QJsonObject& msg)
     if (type == "stand") {
         PlayerState& me = r->players[m_seat];
         me.stood = true;
+        r->currentTurn = 1 - m_seat; // Turn wechseln, du bist daran
 
         // State senden und prüfen, ob Spiel fertig ist
         broadcastState(*r);
@@ -335,10 +337,12 @@ void GameSession::broadcastState(RoomState& r)
 
     // Phase als Text
     state["phase"] = (r.phase == GamePhase::Playing ? "playing" : "finished");
+    state["currentTurn"] = r.currentTurn;
 
     // Dealer Infos
     state["dealerCards"] = dealerCards;
-    state["dealerTotal"] = handValue(r.dealer);
+    // Dealer total nur zeigen, wenn Runde fertig ist
+    state["dealerTotal"] = (r.phase == GamePhase::Playing ? -1 : handValue(r.dealer));
 
     // Player 0 Infos
     state["p0_name"]  = r.players[0].name;

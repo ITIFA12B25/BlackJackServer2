@@ -32,6 +32,7 @@ struct RoomState {
     QPointer<GameSession> sessions[2];   // Session-Pointer für Broadcast an Clients
 
     GamePhase phase = GamePhase::WaitingForPlayers; // Startzustand: wartet auf Spieler
+      int currentTurn = 0; // 0 = player0, 1 = player1 (wer ist dran)
 };
 
 class GameManager

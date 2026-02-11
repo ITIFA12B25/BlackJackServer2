@@ -584,40 +584,50 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
 
     // Zielgröße für Bilder (UI-Design)
     const QSize dealerSize(90, 135);
-    const QSize playerSize(90, 135);
-    const QSize oppSize(90, 135);
+    const QSize playerSize(72, 108);
+    const QSize oppSize(72, 108);
 
     // Labels holen (kann nullptr sein, wenn objectName nicht existiert)
     QLabel* d1 = lbl("lblDealerCard1");
     QLabel* d2 = lbl("lblDealerCard2");
     QLabel* d3 = lbl("lblDealerCard3");
+    QLabel* d4 = lbl("lblDealerCard4");
 
     QLabel* pA = lbl("lblPlayerCard1");
     QLabel* pB = lbl("lblPlayerCard2");
     QLabel* pC = lbl("lblPlayerCard3");
+    QLabel* pD = lbl("lblPlayerCard4");
 
     QLabel* o1 = lbl("lblOppCard1");
     QLabel* o2 = lbl("lblOppCard2");
     QLabel* o3 = lbl("lblOppCard3");
+    QLabel* o4 = lbl("lblOppCard4");
 
     // Dealer-Karten setzen (oder leeren)
     if (dealer.size() > 0) setCardLabel(d1, dealer[0].toString(), dealerSize); else clearCardLabel(d1);
     if (dealer.size() > 1) setCardLabel(d2, dealer[1].toString(), dealerSize); else clearCardLabel(d2);
     if (dealer.size() > 2) setCardLabel(d3, dealer[2].toString(), dealerSize); else clearCardLabel(d3);
-
+    if (dealer.size() > 3) setCardLabel(d4, dealer[3].toString(), dealerSize); else clearCardLabel(d4);
     // Spieler-Karten
     if (you.size() > 0) setCardLabel(pA, you[0].toString(), playerSize); else clearCardLabel(pA);
     if (you.size() > 1) setCardLabel(pB, you[1].toString(), playerSize); else clearCardLabel(pB);
     if (you.size() > 2) setCardLabel(pC, you[2].toString(), playerSize); else clearCardLabel(pC);
-
+    if (you.size() > 3) setCardLabel(pD, you[3].toString(), playerSize); else clearCardLabel(pD);
     // Gegner-Karten
     if (opp.size() > 0) setCardLabel(o1, opp[0].toString(), oppSize); else clearCardLabel(o1);
     if (opp.size() > 1) setCardLabel(o2, opp[1].toString(), oppSize); else clearCardLabel(o2);
     if (opp.size() > 2) setCardLabel(o3, opp[2].toString(), oppSize); else clearCardLabel(o3);
+    if (opp.size() > 3) setCardLabel(o4, opp[3].toString(), oppSize); else clearCardLabel(o4);
+
 
     // Totals + Phase
     const QString phase = state.value("phase").toString();
     const int dealerTotal = state.value("dealerTotal").toInt();
+
+    if (QLabel* dt = lbl("lblDealerTotal")) {
+        if (dealerTotal < 0) dt->setText("Dealer: ?");
+        else dt->setText(QString("Dealer: %1").arg(dealerTotal));
+    }
 
     const int youTotal = (m_seat == 1 ? state.value("p1_total").toInt() : state.value("p0_total").toInt());
     const int oppTotal = (m_seat == 1 ? state.value("p0_total").toInt() : state.value("p1_total").toInt());
@@ -629,6 +639,17 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
     if (QLabel* dt = lbl("lblDealerTotal")) {
         if (phase == "playing") dt->setText("Dealer: ?");
         else dt->setText(QString("Dealer: %1").arg(dealerTotal));
+    }
+    const int turn = state.value("currentTurn").toInt(-1);
+
+    if (QLabel* st = lbl("lblStatus")) {
+        if (state.value("phase").toString() != "playing") {
+            st->setText("Round finished");
+        } else if (turn == m_seat) {
+            st->setText("Your turn");
+        } else {
+            st->setText("Waiting for opponent...");
+        }
     }
 }
 
@@ -660,6 +681,9 @@ void MainWindow::updateGameTableFromState(const QJsonObject& state)
 
     // Totals aus dem State
     const int dealerTotal = state.value("dealerTotal").toInt();
+    ui->tableWidget->setItem(0, 2, new QTableWidgetItem(dealerTotal < 0 ? "?" : QString::number(dealerTotal)));
+
+
     const int p0Total     = state.value("p0_total").toInt();
     const int p1Total     = state.value("p1_total").toInt();
 
