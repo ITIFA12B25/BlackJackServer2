@@ -1,0 +1,4 @@
+
+# QtCreator user settings
+*.pro.user
+.qtcreator/*.pro.user
