@@ -196,7 +196,7 @@ void GameSession::handleMessage(const QJsonObject& msg)
     }
 
     // ------------------------------------------------------------
-    // hit: Karte ziehen
+    // hit: Karte ziehen .
     // ------------------------------------------------------------
     if (type == "hit") {
         PlayerState& me = r->players[m_seat];
