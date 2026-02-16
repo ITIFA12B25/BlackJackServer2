@@ -29,3 +29,7 @@ timestamp,roomId,playerName,outcome,playerTotal,dealerTotal
 2026-02-11T11:26:40,827585,NAME:p2,dealer_bust,18,26
 2026-02-11T12:21:48,959472,NAME:p1,dealer_bust,21,24
 2026-02-11T12:21:48,959472,NAME:p2,dealer_bust,19,24
+2026-02-16T13:31:51,100523,NAME:p1,dealer_win,14,21
+2026-02-16T13:31:51,100523,NAME:p2,player_bust,24,21
+2026-02-16T13:37:19,138578,NAME:p1,player_win,21,20
+2026-02-16T13:37:19,138578,NAME:p2,dealer_win,19,20
