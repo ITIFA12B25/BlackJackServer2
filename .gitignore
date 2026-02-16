@@ -2,3 +2,10 @@
 # QtCreator user settings
 *.pro.user
 .qtcreator/*.pro.user
+build/
+*.exe
+*.o
+*.idx
+.clangd/
+Debug/
+Release/
