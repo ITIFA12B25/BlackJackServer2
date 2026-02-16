@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     // ------------------------------------------------------------
     // Server starten (Console-App).
     // Lauscht auf allen Netzwerkkarten (Any) und dem Port
-    // ------------------------------------------------------------
+    // -------------------------------------------------------------
     if (!server.listen(QHostAddress::Any, port)) {
         // Wenn Listen nicht geht: Fehler ausgeben und Programm beenden
         qDebug() << "Listen failed:" << server.errorString();
