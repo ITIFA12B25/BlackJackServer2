@@ -76,6 +76,7 @@ public:
     QLabel *lblOppCard3;
     QLabel *lblDealerTotal;
     QLabel *lblOppCard4;
+    QLabel *lblWinner;
     QWidget *pageGameTable;
     QGridLayout *gridLayout_2;
     QPushButton *btnLeaveGame2;
@@ -108,7 +109,7 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
         MainWindow->setEnabled(false);
-        MainWindow->resize(785, 588);
+        MainWindow->resize(792, 594);
         QFont font;
         font.setPointSize(8);
         MainWindow->setFont(font);
@@ -395,6 +396,10 @@ public:
         lblOppCard4->setObjectName("lblOppCard4");
         lblOppCard4->setGeometry(QRect(603, 256, 72, 108));
         lblOppCard4->setMinimumSize(QSize(72, 108));
+        lblWinner = new QLabel(groupBox);
+        lblWinner->setObjectName("lblWinner");
+        lblWinner->setGeometry(QRect(230, 60, 211, 81));
+        lblWinner->setFont(font9);
         lblRoomInfo->raise();
         lblStatus->raise();
         lblPlayerCard1->raise();
@@ -414,6 +419,7 @@ public:
         groupBox_player2->raise();
         btnSwitchToTable->raise();
         groupBox_player1->raise();
+        lblWinner->raise();
 
         horizontalLayout->addWidget(groupBox);
 
@@ -663,7 +669,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 785, 21));
+        menubar->setGeometry(QRect(0, 0, 792, 25));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -717,6 +723,7 @@ public:
         lblOppCard3->setText(QString());
         lblDealerTotal->setText(QCoreApplication::translate("MainWindow", "DEALER TOTAL :      ", nullptr));
         lblOppCard4->setText(QString());
+        lblWinner->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         btnLeaveGame2->setText(QCoreApplication::translate("MainWindow", "LEAVE/BACK", nullptr));
         btnSwitchToSimple->setText(QCoreApplication::translate("MainWindow", "SIMPLE VIEW", nullptr));
         lblRoomInfo_2->setText(QCoreApplication::translate("MainWindow", "ROOM ID :       ", nullptr));
