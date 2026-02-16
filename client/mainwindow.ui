@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>785</width>
-    <height>588</height>
+    <width>792</width>
+    <height>594</height>
    </rect>
   </property>
   <property name="font">
@@ -846,6 +846,26 @@
             <string/>
            </property>
           </widget>
+          <widget class="QLabel" name="lblWinner">
+           <property name="geometry">
+            <rect>
+             <x>230</x>
+             <y>90</y>
+             <width>261</width>
+             <height>71</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <family>Comic Sans MS</family>
+             <pointsize>14</pointsize>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
           <zorder>lblRoomInfo</zorder>
           <zorder>lblStatus</zorder>
           <zorder>lblPlayerCard1</zorder>
@@ -865,6 +885,7 @@
           <zorder>groupBox_player2</zorder>
           <zorder>btnSwitchToTable</zorder>
           <zorder>groupBox_player1</zorder>
+          <zorder>lblWinner</zorder>
          </widget>
         </item>
        </layout>
@@ -1453,8 +1474,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>785</width>
-     <height>21</height>
+     <width>792</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>

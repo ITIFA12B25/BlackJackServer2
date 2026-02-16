@@ -466,11 +466,22 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
     if (type == "room_ready") {
         // Zwei Spieler sind da -> Spiel startet
         enterGameSimple();
+        const QString rid = obj.value("roomId").toString();
+        if (QLabel* r = lbl("lblRoomInfo"))    r->setText("ROOM ID: " + rid);
+        if (QLabel* r2 = lbl("lblRoomInfo_2")) r2->setText("ROOM ID: " + rid);
         if (QLabel* s = lbl("status")) s->setText("Game started!");
         return;
     }
 
     if (type == "state") {
+        if (m_seat < 0 && obj.contains("you")) {
+            m_seat = obj.value("you").toInt(-1);
+            qDebug() << "Seat set from state:" << m_seat;
+        }
+        //------------status update
+        const QString rid = obj.value("roomId").toString();
+        if (QLabel* r = lbl("lblRoomInfo"))    r->setText("ROOM ID: " + rid);
+        if (QLabel* r2 = lbl("lblRoomInfo_2")) r2->setText("ROOM ID: " + rid);
         // Spielstand: UI in beiden Ansichten aktualisieren
         updateGameSimpleFromState(obj);
         updateGameTableFromState(obj);
@@ -478,6 +489,7 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
     }
 
     if (type == "result") {
+
         // Runde zu Ende -> NewRound aktiv, Hit/Stand deaktivieren
         ui->btnNewRound->setEnabled(true);
         ui->btnNewRound_2->setEnabled(true);
@@ -488,7 +500,33 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
         ui->btnStand2->setEnabled(false);
 
         const QString outcome = obj.value("outcome").toString();
-        if (QLabel* s = lbl("status")) s->setText("Result: " + outcome);
+        const QString winners = obj.value("winners").toString();
+
+        // --------- Winner Text (englisch) ----------
+        QString text;
+
+
+        if (outcome == "you_win") {
+            text = "You win!";
+        }
+        else if (outcome == "you_lose") {
+
+            if (winners == "Dealer") {
+                text = "Dealer wins!";
+            }
+            else {
+                // fals keine NAme eingegeben wurde
+                QString name = winners.isEmpty() ? "Player" : winners;
+                text = name + " wins!";
+            }
+        }
+        else { // draw . beide gleiche zahl
+            text = "Draw!";
+        }
+
+        if (QLabel* w = lbl("lblWinner")) w->setText(text);
+        if (QLabel* s = lbl("status")) s->setText("Round finished");
+
         return;
     }
 
@@ -560,6 +598,7 @@ void MainWindow::onNewRoundClicked()
     ui->btnStand->setEnabled(true);
     ui->btnHit2->setEnabled(true);
     ui->btnStand2->setEnabled(true);
+
 }
 
 // ------------------------------------------------------------
@@ -643,6 +682,12 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
     const int turn = state.value("currentTurn").toInt(-1);
 
     if (QLabel* st = lbl("lblStatus")) {
+        if (phase != "playing") st->setText("Round finished");
+        else if (turn == m_seat) st->setText("Your turn");
+        else st->setText("Waiting for opponent...");
+    }
+
+    if (QLabel* st = lbl("lblStatus")) {
         if (state.value("phase").toString() != "playing") {
             st->setText("Round finished");
         } else if (turn == m_seat) {
@@ -651,6 +696,19 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
             st->setText("Waiting for opponent...");
         }
     }
+    // ---------- Opponent Name anzeigen ----------
+    const QString p0name = state.value("p0_name").toString().trimmed();
+    const QString p1name = state.value("p1_name").toString().trimmed();
+
+    const QString oppName = (m_seat == 0 ? p1name : p0name);
+
+    if (QLabel* on = lbl("lblOppName")) {
+        on->setText(oppName.isEmpty() ? "Player" : oppName);
+    }
+    //------------test Turn
+    qDebug() << "SEAT=" << m_seat
+             << "TURN=" << state.value("currentTurn").toInt(-99)
+             << "PHASE=" << state.value("phase").toString();
 }
 
 // ------------------------------------------------------------
