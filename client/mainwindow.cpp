@@ -13,7 +13,7 @@
 #include <QAbstractItemView>
 
 // ------------------------------------------------------------
-// Hilfsfunktion: Aktiviert Root + Parents + Children
+// Hilfsfunktion
 // Zweck: Manche Widgets werden (z.B. durch stackedWidget) deaktiviert.
 // Hinweis: Danach Buttons/Controls gezielt per UI-State setzen.
 // ------------------------------------------------------------

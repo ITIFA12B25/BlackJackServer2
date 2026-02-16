@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     const quint16 port = 4242;
 
     // ------------------------------------------------------------
-    // Server starten (Console-App)
+    // Server starten (Console-App).
     // Lauscht auf allen Netzwerkkarten (Any) und dem Port
     // ------------------------------------------------------------
     if (!server.listen(QHostAddress::Any, port)) {
