@@ -1,5 +1,5 @@
 #include "gamesession.h"
-
+#include <algorithm>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QDebug>
@@ -343,7 +343,8 @@ void GameSession::broadcastState(RoomState& r)
     state["dealerCards"] = dealerCards;
     // Dealer total nur zeigen, wenn Runde fertig ist
     state["dealerTotal"] = (r.phase == GamePhase::Playing ? -1 : handValue(r.dealer));
-
+    //-----turn tausch
+    state["currentTurn"] = r.currentTurn;
     // Player 0 Infos
     state["p0_name"]  = r.players[0].name;
     state["p0_cards"] = cardsToJson(r.players[0].hand);
@@ -358,7 +359,11 @@ void GameSession::broadcastState(RoomState& r)
 
     // An beide Sessions senden
     for (int i = 0; i < 2; ++i) {
-        if (r.sessions[i]) r.sessions[i]->sendJson(state);
+        if (r.sessions[i]) {
+            QJsonObject perClient = state; // kopie
+            perClient["you"] = i;          // aktuellr client
+            r.sessions[i]->sendJson(perClient);
+        }
     }
 }
 
@@ -393,23 +398,59 @@ void GameSession::tryFinishIfAllDone(RoomState& r)
     r.phase = GamePhase::Finished;
 
     const int dealerTotal = handValue(r.dealer);
+    const int p0Total = handValue(r.players[0].hand);
+    const int p1Total = handValue(r.players[1].hand);
 
-    // Ergebnis für beide Spieler berechnen und senden
+    // -------------------- Gewinner nach Regel: <=21 und am höchsten --------------------
+    auto score = [](int total) -> int {
+        return (total > 21) ? -1 : total; // bust => -1 (verliert immer)
+    };
+
+    const int sd  = score(dealerTotal);
+    const int sp0 = score(p0Total);
+    const int sp1 = score(p1Total);
+
+    // bestScore = höchste Zahl <= 21
+    const int bestScore = std::max(sd, std::max(sp0, sp1));
+
+    // Gewinner-Flags (können mehrere sein bei Gleichstand)
+    const bool dealerWins = (sd  == bestScore && bestScore >= 0);
+    const bool p0Wins     = (sp0 == bestScore && bestScore >= 0);
+    const bool p1Wins     = (sp1 == bestScore && bestScore >= 0);
+
+    // Text für Gewinner (für UI)
+    QStringList winners;
+    if (dealerWins) winners << "Dealer";
+    if (p0Wins) winners << (r.players[0].name.isEmpty() ? "Player0" : r.players[0].name);
+    if (p1Wins) winners << (r.players[1].name.isEmpty() ? "Player1" : r.players[1].name);
+
+    const QString winnersText = winners.isEmpty() ? "Nobody" : winners.join(", ");
+
+    // Ergebnis an beide Clients senden (aus Sicht des jeweiligen Spielers)
     for (int i = 0; i < 2; ++i) {
-        const int playerTotal = handValue(r.players[i].hand);
-        const QString out = outcomeFor(playerTotal, dealerTotal);
+        const bool youWin = (i == 0 ? p0Wins : p1Wins);
 
-        // CSV speichern (Server-Log)
-        m_manager->appendWinnerCsv(r.roomId, r.players[i].name, out, playerTotal, dealerTotal);
+        // Draw = mehrere Gewinner ODER keiner <=21 (bestScore < 0)
+        const bool isDraw = (bestScore < 0) || (winners.size() > 1);
 
-        // Ergebnis an jeweiligen Client senden
+        QString out;
+        if (isDraw) out = "draw";
+        else out = (youWin ? "you_win" : "you_lose");
+
+        // CSV speichern (optional)
+        m_manager->appendWinnerCsv(r.roomId, r.players[i].name, out,
+                                   (i==0 ? p0Total : p1Total), dealerTotal);
+
         if (r.sessions[i]) {
             r.sessions[i]->sendJson(QJsonObject{
                 {"type","result"},
                 {"roomId", r.roomId},
-                {"you", i},
+
                 {"outcome", out},
-                {"playerTotal", playerTotal},
+                {"winners", winnersText},
+
+                {"p0_total", p0Total},
+                {"p1_total", p1Total},
                 {"dealerTotal", dealerTotal}
             });
         }
