@@ -13,7 +13,7 @@
 #include <QAbstractItemView>
 
 // ------------------------------------------------------------
-// Hilfsfunktion: Aktiviert Root + Parents + Children
+// Hilfsfunktion//
 // Zweck: Manche Widgets werden (z.B. durch stackedWidget) deaktiviert.
 // Hinweis: Danach Buttons/Controls gezielt per UI-State setzen.
 // ------------------------------------------------------------
@@ -35,10 +35,10 @@ static void forceEnableAll(QWidget* root)
         w->setEnabled(true);
 }
 
-// ------------------------------------------------------------
+// -------------------------------------------------------------
 // Karten-Resource:
 // - Key "AH" -> Pfad zur PNG in Qt-Resources
-// - Key "?"  -> back.png (verdeckte Karte)
+// - Key "?"  -> back.png (verdeckte Karte)-
 // ------------------------------------------------------------
 #include <QFile>
 

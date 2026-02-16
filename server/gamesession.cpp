@@ -27,7 +27,7 @@ GameSession::GameSession(QTcpSocket* socket, GameManager* manager, QObject* pare
 
 // ------------------------------------------------------------
 // Liest alle Zeilen vom Socket (Protokoll: 1 JSON pro Zeile)
-// ------------------------------------------------------------
+// -------------------------------------------------------------
 void GameSession::onReadyRead()
 {
     // Protokoll: JSON pro Zeile

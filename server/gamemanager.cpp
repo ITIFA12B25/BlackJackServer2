@@ -8,9 +8,9 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-// ------------------------------------------------------------
-// Erzeugt eine neue zufällige Room-ID (6-stellig)
-// ------------------------------------------------------------
+// -------------------------------------------------------------
+// Erzeugt eine neue zufällige Room-ID (6-stellig).
+// -------------------------------------------------------------
 QString GameManager::newId() const
 {
     // 6-stellige zufällige ID
@@ -19,7 +19,7 @@ QString GameManager::newId() const
 }
 
 // ------------------------------------------------------------
-// Erstellt einen neuen Room und setzt den Creator als Spieler 0 (Host)
+// Erstellt einen neuen Room und setzt den Creator als Spieler 0 (Host).
 // ------------------------------------------------------------
 QString GameManager::createRoom(GameSession* creatorSession, const QString& creatorName)
 {
