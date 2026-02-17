@@ -1,9 +1,9 @@
 #include "gamesession.h"
-#include <algorithm>
+
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QDebug>
-
+#include <algorithm>
 #include "card.h"
 #include "hand.h"
 
@@ -27,7 +27,7 @@ GameSession::GameSession(QTcpSocket* socket, GameManager* manager, QObject* pare
 
 // ------------------------------------------------------------
 // Liest alle Zeilen vom Socket (Protokoll: 1 JSON pro Zeile)
-// -------------------------------------------------------------
+// ------------------------------------------------------------
 void GameSession::onReadyRead()
 {
     // Protokoll: JSON pro Zeile
@@ -82,7 +82,6 @@ void GameSession::handleLine(const QByteArray& line)
 // - leave_room
 // - hit
 // - stand
-// - newround
 // ------------------------------------------------------------
 void GameSession::handleMessage(const QJsonObject& msg)
 {
@@ -196,7 +195,7 @@ void GameSession::handleMessage(const QJsonObject& msg)
     }
 
     // ------------------------------------------------------------
-    // hit: Karte ziehen .
+    // hit: Karte ziehen
     // ------------------------------------------------------------
     if (type == "hit") {
         PlayerState& me = r->players[m_seat];
@@ -233,43 +232,6 @@ void GameSession::handleMessage(const QJsonObject& msg)
         tryFinishIfAllDone(*r);
         return;
     }
-
-    // ------------------------------------------------------------
-    // newround: neue Runde starten (nur wenn Finished)
-    // ------------------------------------------------------------
-    if (type == "newround") {
-        // Nur erlaubt, wenn Runde beendet ist
-        if (r->phase != GamePhase::Finished) { sendError("round not finished"); return; }
-
-        // Deck + Dealer reset
-        r->deck.reset();
-        r->dealer.cards.clear();
-
-        // Spieler reset
-        for (int i = 0; i < 2; ++i) {
-            r->players[i].hand.cards.clear();
-            r->players[i].stood = false;
-        }
-
-        // Startkarten neu geben
-        r->players[0].hand.cards.push_back(r->deck.draw());
-        r->players[0].hand.cards.push_back(r->deck.draw());
-
-        r->players[1].hand.cards.push_back(r->deck.draw());
-        r->players[1].hand.cards.push_back(r->deck.draw());
-
-        r->dealer.cards.push_back(r->deck.draw());
-        r->dealer.cards.push_back(r->deck.draw());
-
-        // Phase wieder Playing
-        r->phase = GamePhase::Playing;
-
-        // Info + State senden
-        broadcastToRoom(QJsonObject{{"type","newround"},{"msg","ok"}});
-        broadcastState(*r);
-        return;
-    }
-
     // Wenn type nicht bekannt ist
     sendError("unknown command");
 }
@@ -316,13 +278,6 @@ void GameSession::broadcastToRoom(const QJsonObject& obj)
 // ------------------------------------------------------------
 void GameSession::broadcastState(RoomState& r)
 {
-    // Dealer-Karten: im Spiel erste Karte verdeckt
-    QJsonArray dealerCards;
-    for (int i = 0; i < r.dealer.cards.size(); ++i) {
-        if (r.phase == GamePhase::Playing && i == 0) dealerCards.append("?");
-        else dealerCards.append(cardToString(r.dealer.cards[i]));
-    }
-
     // Helper: Hand -> JSON Array von Strings
     auto cardsToJson = [](const Hand& h){
         QJsonArray arr;
@@ -330,21 +285,26 @@ void GameSession::broadcastState(RoomState& r)
         return arr;
     };
 
+    // Dealer-Karten: im Spiel erste Karte verdeckt
+    QJsonArray dealerCards;
+    for (int i = 0; i < r.dealer.cards.size(); ++i) {
+        if (r.phase == GamePhase::Playing && i == 0) dealerCards.append("?");
+        else dealerCards.append(cardToString(r.dealer.cards[i]));
+    }
+
     // State Objekt bauen
     QJsonObject state;
     state["type"] = "state";
     state["roomId"] = r.roomId;
 
-    // Phase als Text
+    // Phase + Turn
     state["phase"] = (r.phase == GamePhase::Playing ? "playing" : "finished");
     state["currentTurn"] = r.currentTurn;
 
     // Dealer Infos
     state["dealerCards"] = dealerCards;
-    // Dealer total nur zeigen, wenn Runde fertig ist
     state["dealerTotal"] = (r.phase == GamePhase::Playing ? -1 : handValue(r.dealer));
-    //-----turn tausch
-    state["currentTurn"] = r.currentTurn;
+
     // Player 0 Infos
     state["p0_name"]  = r.players[0].name;
     state["p0_cards"] = cardsToJson(r.players[0].hand);
@@ -357,11 +317,11 @@ void GameSession::broadcastState(RoomState& r)
     state["p1_total"] = handValue(r.players[1].hand);
     state["p1_stood"] = r.players[1].stood;
 
-    // An beide Sessions senden
+    // An beide Sessions senden (mit "you" pro Client)
     for (int i = 0; i < 2; ++i) {
         if (r.sessions[i]) {
-            QJsonObject perClient = state; // kopie
-            perClient["you"] = i;          // aktuellr client
+            QJsonObject perClient = state; // Kopie
+            perClient["you"] = i;          // Seat für diesen Client (0/1)
             r.sessions[i]->sendJson(perClient);
         }
     }
@@ -442,16 +402,45 @@ void GameSession::tryFinishIfAllDone(RoomState& r)
                                    (i==0 ? p0Total : p1Total), dealerTotal);
 
         if (r.sessions[i]) {
+
+            // Namen sauber vorbereiten (wenn leer -> "Player")
+            const QString p0Name = r.players[0].name.trimmed().isEmpty() ? "Player" : r.players[0].name.trimmed();
+            const QString p1Name = r.players[1].name.trimmed().isEmpty() ? "Player" : r.players[1].name.trimmed();
+
+            // Für diesen Client: Gegner-Name bestimmen
+            const QString oppName = (i == 0 ? p1Name : p0Name);
+
+            // Wer hat gewonnen? (eindeutig nur wenn kein Draw)
+            QString winnerName = "Dealer";
+            if (!dealerWins) {
+                // Wenn Dealer nicht gewonnen hat, dann hat ein Spieler gewonnen
+                winnerName = (p0Wins ? p0Name : p1Name);
+            }
+
+            // Ergebnis-Paket an Client schicken (mit Namen!)
             r.sessions[i]->sendJson(QJsonObject{
-                {"type","result"},
+                {"type", "result"},
                 {"roomId", r.roomId},
 
+                // Outcome bleibt wie du es machst: "draw" / "you_win" / "you_lose"
                 {"outcome", out},
+
+                // Gewinner als Text (für Debug/Anzeige optional)
                 {"winners", winnersText},
 
+                // Totals
                 {"p0_total", p0Total},
                 {"p1_total", p1Total},
-                {"dealerTotal", dealerTotal}
+                {"dealerTotal", dealerTotal},
+
+                // WICHTIG: Namen mitschicken, damit Client sie anzeigen kann
+                {"p0_name", p0Name},
+                {"p1_name", p1Name},
+
+                // Optional: für Client bequem (nicht zwingend)
+                {"you", i},                 // 0 oder 1
+                {"opp_name", oppName},      // Name vom Gegner (oder "Player")
+                {"winner_name", winnerName} // Name vom Gewinner (Dealer oder Spielername)
             });
         }
     }

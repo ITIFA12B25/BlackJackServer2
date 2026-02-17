@@ -54,4 +54,7 @@
         <file>assets/cards/QS.png</file>
         <file>assets/cards/back.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>background.qrc</file>
+    </qresource>
 </RCC>
