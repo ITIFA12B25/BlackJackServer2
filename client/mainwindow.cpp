@@ -512,34 +512,57 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
     }
 
     if (type == "state") {
-        const QString rid = obj.value("roomId").toString();
-        if (QLabel* r = lbl("lblRoomInfo"))    r->setText("ROOM ID: " + rid);
-        if (QLabel* r2 = lbl("lblRoomInfo_2")) r2->setText("ROOM ID: " + rid);
-        if (m_seat < 0 && obj.contains("you")) {
+
+        // Room-ID anzeigen
+        QString rid = obj.value("roomId").toString();
+        if (QLabel* r  = lbl("lblRoomInfo"))    r->setText("ROOM ID: " + rid);
+        if (QLabel* r2 = lbl("lblRoomInfo_2"))  r2->setText("ROOM ID: " + rid);
+
+        // Sitzplatz (nur einmal setzen)
+        if (m_seat < 0 && obj.contains("you"))
             m_seat = obj.value("you").toInt(-1);
-            qDebug() << "Seat set from state:" << m_seat;
-        }
-        // Spielstand: UI in beiden Ansichten aktualisieren
+
+        // Karten/Points updaten
         updateGameSimpleFromState(obj);
         updateGameTableFromState(obj);
-        // ------------------------------------------------------------
-        // Gegner-Name NUR HIER setzen (damit updateGame... es nicht überschreibt)
-        // ------------------------------------------------------------
-        const int youSeat = obj.contains("you") ? obj.value("you").toInt(m_seat) : m_seat;
 
+        // -------- Buttons an/aus (sehr einfach) --------
+
+        // Phase lesen (playing / finished)
+        QString phase = obj.value("phase").toString();
+
+        // Turn lesen (0/1)
+        int currentTurn = obj.value("currentTurn").toInt(-1);
+
+        // Wenn Spiel finished -> immer AUS
+        bool myTurn = false;
+        if (phase != "finished") {
+            // Nur wenn du dran bist -> AN
+            myTurn = (currentTurn == m_seat);
+        }
+
+        // Buttons setzen
+        ui->btnHit->setEnabled(myTurn);
+        ui->btnStand->setEnabled(myTurn);
+        ui->btnHit2->setEnabled(myTurn);
+        ui->btnStand2->setEnabled(myTurn);
+
+        // Status-Text
+        if (QLabel* s = lbl("status"))
+            s->setText(myTurn ? "Your turn" : "Opponent turn");
+
+        // -------- Opp-Name nur als Name --------
         QString p0 = obj.value("p0_name").toString().trimmed();
         QString p1 = obj.value("p1_name").toString().trimmed();
-
         if (p0.isEmpty()) p0 = "Player";
         if (p1.isEmpty()) p1 = "Player";
 
-        const QString oppName = (youSeat == 0 ? p1 : p0);
-
-        // Nur den Namen anzeigen
-        if (QLabel* o = lbl("lblOppName")) {
+        QString oppName = (m_seat == 0 ? p1 : p0);
+        if (QLabel* o = lbl("lblOppName"))
             o->setText(oppName);
-        }
+
         return;
+
     }
 
     if (type == "result") {
@@ -596,6 +619,7 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
 
         return;
     }
+
     if (type == "error") {
         // Server meldet Fehler (z.B. join first, no game, etc.)
         qDebug() << "Server error:" << obj.value("msg").toString();
@@ -644,7 +668,6 @@ void MainWindow::onHitClicked()
     // Spieler zieht eine Karte
     sendJson(QJsonObject{{"type","hit"}});
 }
-
 void MainWindow::onStandClicked()
 {
     // Spieler bleibt stehen
