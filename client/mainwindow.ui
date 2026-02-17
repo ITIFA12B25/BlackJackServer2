@@ -200,7 +200,7 @@
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>794</width>
+          <width>816</width>
           <height>462</height>
          </rect>
         </property>
@@ -217,6 +217,19 @@
          <string/>
         </property>
         <layout class="QGridLayout" name="gridLayout_6">
+         <item row="4" column="2">
+          <widget class="QLabel" name="lblPlayerCard6">
+           <property name="minimumSize">
+            <size>
+             <width>72</width>
+             <height>108</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
          <item row="4" column="8">
           <widget class="QLabel" name="lblOppCard6">
            <property name="minimumSize">
@@ -230,21 +243,51 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
-          <widget class="QLabel" name="lblPlayerCard5">
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>108</height>
-            </size>
+         <item row="2" column="3">
+          <widget class="QLabel" name="lblWinner">
+           <property name="font">
+            <font>
+             <family>Comic Sans MS</family>
+             <pointsize>12</pointsize>
+            </font>
            </property>
            <property name="text">
             <string/>
            </property>
           </widget>
          </item>
-         <item row="3" column="7">
-          <widget class="QLabel" name="lblOppCard2">
+         <item row="5" column="0" colspan="2">
+          <widget class="QPushButton" name="btnSwitchToTable">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>45</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Comic Sans MS</family>
+             <pointsize>14</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
+           </property>
+           <property name="text">
+            <string>Tableview</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLabel" name="lblPlayerCard5">
            <property name="minimumSize">
             <size>
              <width>72</width>
@@ -269,85 +312,6 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="5">
-          <widget class="QLabel" name="lblOppCard1">
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>108</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="lblPlayerCard4">
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>108</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="3">
-          <widget class="QGroupBox" name="groupBox_player1">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>100</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Comic Sans MS</family>
-             <pointsize>13</pointsize>
-            </font>
-           </property>
-           <property name="title">
-            <string>YOU </string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0">
-             <widget class="QLabel" name="lblPlayerTotal">
-              <property name="font">
-               <font>
-                <family>Comic Sans MS</family>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>TOTAL :  </string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QLabel" name="lblWinner">
-           <property name="font">
-            <font>
-             <family>Comic Sans MS</family>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="3">
           <widget class="QLabel" name="lblStatus">
            <property name="font">
@@ -356,98 +320,12 @@
              <pointsize>8</pointsize>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">color: white;
+</string>
+           </property>
            <property name="text">
             <string>STATUS : WAITING</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="lblPlayerCard1">
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>108</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="lblPlayerCard2">
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>108</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="7">
-          <widget class="QLabel" name="lblOppCard5">
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>108</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="7" colspan="2">
-          <widget class="QPushButton" name="btnLeaveGame1">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>45</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Comic Sans MS</family>
-             <pointsize>14</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>LEAVE/BACK</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="5">
-          <widget class="QLabel" name="lblOppCard4">
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>108</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="8">
-          <widget class="QLabel" name="lblOppCard3">
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>108</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
            </property>
           </widget>
          </item>
@@ -470,6 +348,10 @@
              <family>Comic Sans MS</family>
              <pointsize>13</pointsize>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: white;
+</string>
            </property>
            <property name="title">
             <string>ㅤㅤㅤㅤㅤ</string>
@@ -508,16 +390,20 @@
               <pointsize>12</pointsize>
              </font>
             </property>
+            <property name="styleSheet">
+             <string notr="true">color: white;
+</string>
+            </property>
             <property name="text">
              <string>lblOppName</string>
             </property>
            </widget>
           </widget>
          </item>
-         <item row="5" column="0" colspan="2">
-          <widget class="QPushButton" name="btnSwitchToTable">
+         <item row="5" column="4">
+          <widget class="QPushButton" name="btnStand">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -531,16 +417,275 @@
            <property name="font">
             <font>
              <family>Comic Sans MS</family>
-             <pointsize>14</pointsize>
+             <pointsize>18</pointsize>
             </font>
            </property>
+           <property name="layoutDirection">
+            <enum>Qt::LayoutDirection::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+    background-color: rgb(9, 91, 46);
+    color: white;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+QPushButton:disabled {
+    background-color: rgb(17, 173, 87);
+    color: rgb(200,200,200);
+}</string>
+           </property>
            <property name="text">
-            <string>Tableview</string>
+            <string>STAND</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="2">
-          <widget class="QLabel" name="lblPlayerCard6">
+         <item row="3" column="7">
+          <widget class="QLabel" name="lblOppCard2">
+           <property name="minimumSize">
+            <size>
+             <width>72</width>
+             <height>108</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="5">
+          <widget class="QLabel" name="lblOppCard4">
+           <property name="minimumSize">
+            <size>
+             <width>72</width>
+             <height>108</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="7">
+          <widget class="QLabel" name="lblOppCard5">
+           <property name="minimumSize">
+            <size>
+             <width>72</width>
+             <height>108</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="lblPlayerCard4">
+           <property name="minimumSize">
+            <size>
+             <width>72</width>
+             <height>108</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3" rowspan="2" colspan="2">
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>32</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>280</width>
+             <height>150</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Comic Sans MS</family>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: white;
+</string>
+           </property>
+           <property name="title">
+            <string>DEALER</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblDealerCard1">
+              <property name="minimumSize">
+               <size>
+                <width>70</width>
+                <height>105</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="lblDealerCard2">
+              <property name="minimumSize">
+               <size>
+                <width>70</width>
+                <height>105</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="lblDealerCard3">
+              <property name="minimumSize">
+               <size>
+                <width>70</width>
+                <height>105</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="lblDealerCard4">
+              <property name="minimumSize">
+               <size>
+                <width>70</width>
+                <height>105</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" colspan="2">
+             <widget class="QLabel" name="lblDealerTotal">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>15</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Comic Sans MS</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>DEALER TOTAL :      </string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+           <zorder>lblDealerTotal</zorder>
+           <zorder>lblDealerCard1</zorder>
+           <zorder>lblDealerCard2</zorder>
+           <zorder>lblDealerCard3</zorder>
+           <zorder>lblDealerCard4</zorder>
+          </widget>
+         </item>
+         <item row="3" column="8">
+          <widget class="QLabel" name="lblOppCard3">
+           <property name="minimumSize">
+            <size>
+             <width>72</width>
+             <height>108</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="5">
+          <widget class="QLabel" name="lblOppCard1">
+           <property name="minimumSize">
+            <size>
+             <width>72</width>
+             <height>108</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="3">
+          <widget class="QGroupBox" name="groupBox_player1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Comic Sans MS</family>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+color: white;
+</string>
+           </property>
+           <property name="title">
+            <string>YOU </string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblPlayerTotal">
+              <property name="font">
+               <font>
+                <family>Comic Sans MS</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>TOTAL :  </string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="lblPlayerCard2">
+           <property name="minimumSize">
+            <size>
+             <width>72</width>
+             <height>108</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="lblPlayerCard1">
            <property name="minimumSize">
             <size>
              <width>72</width>
@@ -579,6 +724,10 @@
              <bold>true</bold>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">color: white;
+</string>
+           </property>
            <property name="text">
             <string>ROOM ID :       </string>
            </property>
@@ -593,34 +742,6 @@
            </property>
            <property name="buddy">
             <cstring>lblRoomInfo</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="4">
-          <widget class="QPushButton" name="btnStand">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>45</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Comic Sans MS</family>
-             <pointsize>18</pointsize>
-            </font>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LayoutDirection::LeftToRight</enum>
-           </property>
-           <property name="text">
-            <string>STAND</string>
            </property>
           </widget>
          </item>
@@ -644,140 +765,52 @@
              <pointsize>17</pointsize>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+    background-color: rgb(9, 91, 46);
+    color: white;
+    border-radius: 6px;
+    padding: 6px;
+}
+
+QPushButton:disabled {
+    background-color: rgb(17, 173, 87);
+    color: rgb(200,200,200);
+}</string>
+           </property>
            <property name="text">
             <string>HIT</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="3" rowspan="2" colspan="2">
-          <widget class="QGroupBox" name="groupBox_2">
+         <item row="5" column="6" colspan="3">
+          <widget class="QPushButton" name="btnLeaveGame1">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>32</horstretch>
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="minimumSize">
             <size>
-             <width>280</width>
-             <height>150</height>
+             <width>0</width>
+             <height>45</height>
             </size>
            </property>
            <property name="font">
             <font>
              <family>Comic Sans MS</family>
-             <pointsize>13</pointsize>
+             <pointsize>14</pointsize>
             </font>
            </property>
-           <property name="title">
-            <string>DEALER</string>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
            </property>
-           <widget class="QLabel" name="lblDealerCard1">
-            <property name="geometry">
-             <rect>
-              <x>12</x>
-              <y>39</y>
-              <width>90</width>
-              <height>135</height>
-             </rect>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>105</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QLabel" name="lblDealerCard3">
-            <property name="geometry">
-             <rect>
-              <x>117</x>
-              <y>39</y>
-              <width>90</width>
-              <height>135</height>
-             </rect>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>105</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QLabel" name="lblDealerCard2">
-            <property name="geometry">
-             <rect>
-              <x>67</x>
-              <y>39</y>
-              <width>90</width>
-              <height>135</height>
-             </rect>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>105</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QLabel" name="lblDealerCard4">
-            <property name="geometry">
-             <rect>
-              <x>167</x>
-              <y>39</y>
-              <width>90</width>
-              <height>135</height>
-             </rect>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>105</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-           <widget class="QLabel" name="lblDealerTotal">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>240</y>
-              <width>110</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>15</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Comic Sans MS</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>DEALER TOTAL :      </string>
-            </property>
-           </widget>
-           <zorder>lblDealerCard4</zorder>
-           <zorder>lblDealerCard3</zorder>
-           <zorder>lblDealerCard2</zorder>
-           <zorder>lblDealerCard1</zorder>
-           <zorder>lblDealerTotal</zorder>
+           <property name="text">
+            <string>LEAVE/BACK</string>
+           </property>
           </widget>
          </item>
         </layout>
@@ -834,6 +867,10 @@
             <bold>true</bold>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">color: white;
+border-radius: 6px;</string>
+          </property>
           <property name="text">
            <string>ROOM ID :       </string>
           </property>
@@ -858,6 +895,10 @@
             <family>Comic Sans MS</family>
             <pointsize>12</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: white;
+border-radius: 6px;</string>
           </property>
           <row>
            <property name="text">
@@ -916,6 +957,11 @@
             <pointsize>17</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
+          </property>
           <property name="text">
            <string>STAND</string>
           </property>
@@ -934,6 +980,11 @@
             <family>Comic Sans MS</family>
             <pointsize>17</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
           </property>
           <property name="text">
            <string>HIT</string>
@@ -954,6 +1005,11 @@
             <pointsize>17</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
+          </property>
           <property name="text">
            <string>SIMPLE VIEW</string>
           </property>
@@ -973,6 +1029,11 @@
             <pointsize>17</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
+          </property>
           <property name="text">
            <string>LEAVE/BACK</string>
           </property>
@@ -990,6 +1051,10 @@
             <pointsize>26</pointsize>
             <fontweight>ExtraBold</fontweight>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: white;
+border-radius: 6px;</string>
           </property>
           <property name="text">
            <string>JOIN ROOM</string>
@@ -1012,6 +1077,10 @@
             <family>Comic Sans MS</family>
             <pointsize>12</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: white;
+border-radius: 6px;</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::Shape::NoFrame</enum>
@@ -1167,6 +1236,11 @@
             <bold>false</bold>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
+          </property>
           <property name="text">
            <string>JOIN ROOM</string>
           </property>
@@ -1195,6 +1269,11 @@
             <pointsize>18</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
+          </property>
           <property name="text">
            <string>BACK</string>
           </property>
@@ -1222,6 +1301,11 @@
             <family>Comic Sans MS</family>
             <pointsize>18</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
           </property>
           <property name="text">
            <string>REFRESH</string>
@@ -1259,15 +1343,15 @@
           <property name="font">
            <font>
             <family>Comic Sans MS</family>
-            <pointsize>44</pointsize>
-            <fontweight>ExtraBold</fontweight>
+            <pointsize>48</pointsize>
+            <bold>true</bold>
            </font>
           </property>
           <property name="cursor">
            <cursorShape>ArrowCursor</cursorShape>
           </property>
           <property name="styleSheet">
-           <string notr="true">color: rgb(0, 0, 0);</string>
+           <string notr="true">color: rgb(255, 255, 255)</string>
           </property>
           <property name="text">
            <string>BLACK JACK</string>
@@ -1291,6 +1375,11 @@
             <pointsize>19</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">
+color: white;
+border-radius: 6px;</string>
+          </property>
           <property name="text">
            <string>NAME : </string>
           </property>
@@ -1309,6 +1398,11 @@
             <family>Comic Sans MS</family>
             <pointsize>19</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
           </property>
           <property name="text">
            <string/>
@@ -1339,7 +1433,9 @@
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">outline: rgb(0,0,0);</string>
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
           </property>
           <property name="text">
            <string>CREATE GAME</string>
@@ -1359,6 +1455,11 @@
             <family>Comic Sans MS</family>
             <pointsize>19</pointsize>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(9, 91, 46);
+color: white;
+border-radius: 6px;</string>
           </property>
           <property name="text">
            <string>JOIN GAME</string>
