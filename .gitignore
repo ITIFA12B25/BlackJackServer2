@@ -1,11 +1,22 @@
-
-# QtCreator user settings
-*.pro.user
-.qtcreator/*.pro.user
+# build output
 build/
-*.exe
+
+# QtCreator user files
+*.pro.user
+*.pro.user.*
+*.qtc_clangd/
+*.qmlc
+
+# object/exe
 *.o
-*.idx
-.clangd/
-Debug/
-Release/
+*.obj
+*.exe
+*.dll
+*.a
+*.lib
+
+# generated ui / moc / rcc
+ui_*.h
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
