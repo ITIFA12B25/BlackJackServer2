@@ -692,7 +692,7 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
     const QJsonArray opp = (m_seat == 1 ? p0 : p1);
 
     // Zielgröße für Bilder (UI-Design)
-    const QSize dealerSize(90, 135);
+    const QSize dealerSize(72, 108);
     const QSize playerSize(72, 108);
     const QSize oppSize(72, 108);
 
@@ -706,11 +706,15 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
     QLabel* pB = lbl("lblPlayerCard2");
     QLabel* pC = lbl("lblPlayerCard3");
     QLabel* pD = lbl("lblPlayerCard4");
+    QLabel* pE = lbl("lblPlayerCard5");
+    QLabel* pF = lbl("lblPlayerCard6");
 
     QLabel* o1 = lbl("lblOppCard1");
     QLabel* o2 = lbl("lblOppCard2");
     QLabel* o3 = lbl("lblOppCard3");
     QLabel* o4 = lbl("lblOppCard4");
+    QLabel* o5 = lbl("lblOppCard5");
+    QLabel* o6 = lbl("lblOppCard6");
 
     // Dealer-Karten setzen (oder leeren)
     if (dealer.size() > 0) setCardLabel(d1, dealer[0].toString(), dealerSize); else clearCardLabel(d1);
@@ -722,11 +726,16 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
     if (you.size() > 1) setCardLabel(pB, you[1].toString(), playerSize); else clearCardLabel(pB);
     if (you.size() > 2) setCardLabel(pC, you[2].toString(), playerSize); else clearCardLabel(pC);
     if (you.size() > 3) setCardLabel(pD, you[3].toString(), playerSize); else clearCardLabel(pD);
+    if (you.size() > 4) setCardLabel(pE, you[4].toString(), playerSize); else clearCardLabel(pE);
+    if (you.size() > 5) setCardLabel(pF, you[5].toString(), playerSize); else clearCardLabel(pF);
     // Gegner-Karten
     if (opp.size() > 0) setCardLabel(o1, opp[0].toString(), oppSize); else clearCardLabel(o1);
     if (opp.size() > 1) setCardLabel(o2, opp[1].toString(), oppSize); else clearCardLabel(o2);
     if (opp.size() > 2) setCardLabel(o3, opp[2].toString(), oppSize); else clearCardLabel(o3);
     if (opp.size() > 3) setCardLabel(o4, opp[3].toString(), oppSize); else clearCardLabel(o4);
+    if (opp.size() > 4) setCardLabel(o5, opp[4].toString(), oppSize); else clearCardLabel(o5);
+    if (opp.size() > 5) setCardLabel(o6, opp[5].toString(), oppSize); else clearCardLabel(o6);
+
 
     // Totals + Phase
     const QString phase = state.value("phase").toString();
