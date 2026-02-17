@@ -544,73 +544,55 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
 
     if (type == "result") {
 
-        // Runde beendet -> Buttons deaktivieren
-        ui->btnHit->setEnabled(false);
-        ui->btnStand->setEnabled(false);
-        ui->btnHit2->setEnabled(false);
-        ui->btnStand2->setEnabled(false);
+        // Einfache Regeln:
+        // - you_win  -> "You win!"
+        // - you_lose -> "You lost!" + "X wins!"
+        // - draw     -> "Draw!" + "You = Dealer/Opp"
 
-        QString text;
-
-        // Outcome vom Server (you_win / you_lose / draw)
         const QString outcome = obj.value("outcome").toString();
-
-        // Eigener Sitz (0 oder 1)
         const int youSeat = obj.value("you").toInt(m_seat);
 
-        // Namen vom Server lesen
+        // Namen lesen (leer -> Player)
         QString p0Name = obj.value("p0_name").toString().trimmed();
         QString p1Name = obj.value("p1_name").toString().trimmed();
-
         if (p0Name.isEmpty()) p0Name = "Player";
         if (p1Name.isEmpty()) p1Name = "Player";
 
-        // Gegner-Name bestimmen
-        QString oppName = (youSeat == 0 ? p1Name : p0Name);
+        // Gegner-Name
+        const QString oppName = (youSeat == 0 ? p1Name : p0Name);
 
-        // Gewinner-Name (vom Server geschickt)
+        // Gewinner-Name (Server)
         QString winnerName = obj.value("winner_name").toString().trimmed();
-        if (winnerName.isEmpty()) winnerName = "Dealer";
 
-        // ------------------------------------------------------------
-        // Anzeige-Regeln
-        // ------------------------------------------------------------
+        // Optional: Draw mit Dealer
+        const bool drawWithDealer = obj.value("draw_with_dealer").toBool(false);
+
+        QString text;
 
         if (outcome == "you_win") {
-
             text = "You win!";
-
         }
         else if (outcome == "you_lose") {
 
-            // Wenn Dealer gewonnen hat
-            if (winnerName == "Dealer") {
-                text = "You lost!\nDealer wins!";
-            }
-            else {
-                // Gegner gewonnen
-                text = "You lost!\n" + oppName + " wins!";
-            }
+            // Falls Server keinen Gewinner schickt -> Dealer als Default
+            if (winnerName.isEmpty())
+                winnerName = "Dealer";
+
+            text = "You lost!\n" + winnerName + " wins!";
         }
         else if (outcome == "draw") {
 
-            text = "Draw!";
+            // Mit wem war es gleich?
+            const QString partner = drawWithDealer ? "Dealer" : oppName;
 
+            text = "Draw!\nYou = " + partner;
         }
         else {
-
             text = "Round finished!";
         }
 
-        // Winner Label setzen
         if (QLabel* w = lbl("lblWinner"))
             w->setText(text);
-
-        if (QLabel* s = lbl("status"))
-            s->setText("Round finished");
-
-        if (QLabel* st = lbl("lblStatus"))
-            st->setText("Round finished");
 
         return;
     }

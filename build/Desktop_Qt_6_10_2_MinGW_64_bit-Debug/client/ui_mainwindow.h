@@ -33,7 +33,7 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
-    QGridLayout *gridLayout_6;
+    QGridLayout *gridLayout_3;
     QStackedWidget *stackedWidget;
     QWidget *pageCreateRoom;
     QVBoxLayout *verticalLayout_2;
@@ -92,11 +92,12 @@ public:
     QPushButton *Refresh;
     QWidget *pageLobby;
     QGridLayout *gridLayout;
-    QPushButton *btnGoCreate;
-    QLabel *label;
     QLabel *connection;
-    QPushButton *btnGoJoin;
+    QLabel *label;
+    QLabel *label_4;
     QLineEdit *txtName;
+    QPushButton *btnGoCreate;
+    QPushButton *btnGoJoin;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -115,8 +116,8 @@ public:
         MainWindow->setTabShape(QTabWidget::TabShape::Rounded);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
-        gridLayout_6 = new QGridLayout(centralwidget);
-        gridLayout_6->setObjectName("gridLayout_6");
+        gridLayout_3 = new QGridLayout(centralwidget);
+        gridLayout_3->setObjectName("gridLayout_3");
         stackedWidget = new QStackedWidget(centralwidget);
         stackedWidget->setObjectName("stackedWidget");
         stackedWidget->setEnabled(false);
@@ -587,57 +588,65 @@ public:
         pageLobby->setStyleSheet(QString::fromUtf8(""));
         gridLayout = new QGridLayout(pageLobby);
         gridLayout->setObjectName("gridLayout");
-        btnGoCreate = new QPushButton(pageLobby);
-        btnGoCreate->setObjectName("btnGoCreate");
-        btnGoCreate->setEnabled(false);
-        btnGoCreate->setMinimumSize(QSize(0, 50));
-        QFont font12;
-        font12.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font12.setPointSize(19);
-        btnGoCreate->setFont(font12);
-        btnGoCreate->setStyleSheet(QString::fromUtf8("outline: rgb(0,0,0);"));
-
-        gridLayout->addWidget(btnGoCreate, 3, 0, 1, 1);
-
-        label = new QLabel(pageLobby);
-        label->setObjectName("label");
-        label->setMinimumSize(QSize(0, 250));
-        QFont font13;
-        font13.setFamilies({QString::fromUtf8("Comic Sans MS")});
-        font13.setPointSize(44);
-        font13.setWeight(QFont::ExtraBold);
-        label->setFont(font13);
-        label->setCursor(QCursor(Qt::CursorShape::ArrowCursor));
-        label->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 0);"));
-        label->setTextFormat(Qt::TextFormat::PlainText);
-        label->setScaledContents(true);
-        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
-
-        gridLayout->addWidget(label, 1, 0, 1, 1);
-
         connection = new QLabel(pageLobby);
         connection->setObjectName("connection");
         connection->setMinimumSize(QSize(15, 15));
 
         gridLayout->addWidget(connection, 0, 0, 1, 1);
 
-        btnGoJoin = new QPushButton(pageLobby);
-        btnGoJoin->setObjectName("btnGoJoin");
-        btnGoJoin->setMinimumSize(QSize(0, 50));
-        btnGoJoin->setFont(font12);
+        label = new QLabel(pageLobby);
+        label->setObjectName("label");
+        label->setMinimumSize(QSize(0, 250));
+        QFont font12;
+        font12.setFamilies({QString::fromUtf8("Comic Sans MS")});
+        font12.setPointSize(44);
+        font12.setWeight(QFont::ExtraBold);
+        label->setFont(font12);
+        label->setCursor(QCursor(Qt::CursorShape::ArrowCursor));
+        label->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 0);"));
+        label->setTextFormat(Qt::TextFormat::PlainText);
+        label->setScaledContents(true);
+        label->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
-        gridLayout->addWidget(btnGoJoin, 4, 0, 1, 1);
+        gridLayout->addWidget(label, 1, 0, 1, 2);
+
+        label_4 = new QLabel(pageLobby);
+        label_4->setObjectName("label_4");
+        QFont font13;
+        font13.setFamilies({QString::fromUtf8("Comic Sans MS")});
+        font13.setPointSize(19);
+        label_4->setFont(font13);
+
+        gridLayout->addWidget(label_4, 2, 0, 1, 1);
 
         txtName = new QLineEdit(pageLobby);
         txtName->setObjectName("txtName");
         txtName->setMinimumSize(QSize(0, 50));
-        txtName->setFont(font12);
+        txtName->setFont(font13);
 
-        gridLayout->addWidget(txtName, 2, 0, 1, 1);
+        gridLayout->addWidget(txtName, 2, 1, 1, 1);
+
+        btnGoCreate = new QPushButton(pageLobby);
+        btnGoCreate->setObjectName("btnGoCreate");
+        btnGoCreate->setEnabled(false);
+        sizePolicy5.setHeightForWidth(btnGoCreate->sizePolicy().hasHeightForWidth());
+        btnGoCreate->setSizePolicy(sizePolicy5);
+        btnGoCreate->setMinimumSize(QSize(0, 50));
+        btnGoCreate->setFont(font13);
+        btnGoCreate->setStyleSheet(QString::fromUtf8("outline: rgb(0,0,0);"));
+
+        gridLayout->addWidget(btnGoCreate, 3, 0, 1, 2);
+
+        btnGoJoin = new QPushButton(pageLobby);
+        btnGoJoin->setObjectName("btnGoJoin");
+        btnGoJoin->setMinimumSize(QSize(0, 50));
+        btnGoJoin->setFont(font13);
+
+        gridLayout->addWidget(btnGoJoin, 4, 0, 1, 2);
 
         stackedWidget->addWidget(pageLobby);
 
-        gridLayout_6->addWidget(stackedWidget, 0, 0, 1, 1);
+        gridLayout_3->addWidget(stackedWidget, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -654,7 +663,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(1);
+        stackedWidget->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -727,11 +736,12 @@ public:
         join_room->setText(QCoreApplication::translate("MainWindow", "JOIN ROOM", nullptr));
         btnBackFromJoin->setText(QCoreApplication::translate("MainWindow", "BACK", nullptr));
         Refresh->setText(QCoreApplication::translate("MainWindow", "REFRESH", nullptr));
-        btnGoCreate->setText(QCoreApplication::translate("MainWindow", "CREATE GAME", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "BLACK JACK", nullptr));
         connection->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
-        btnGoJoin->setText(QCoreApplication::translate("MainWindow", "JOIN GAME", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "BLACK JACK", nullptr));
+        label_4->setText(QCoreApplication::translate("MainWindow", "NAME : ", nullptr));
         txtName->setText(QString());
+        btnGoCreate->setText(QCoreApplication::translate("MainWindow", "CREATE GAME", nullptr));
+        btnGoJoin->setText(QCoreApplication::translate("MainWindow", "JOIN GAME", nullptr));
     } // retranslateUi
 
 };
