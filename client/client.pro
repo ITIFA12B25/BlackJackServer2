@@ -78,5 +78,5 @@ DISTFILES += \
     assets/cards/QS.png \
     client.pro.user
 
-RESOURCES += \
-    resources.qrc
+RESOURCES += resources.qrc \
+             background.qrc

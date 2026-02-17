@@ -568,8 +568,8 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
     if (type == "result") {
 
         // Einfache Regeln:
-        // - you_win  -> "You win!"
-        // - you_lose -> "You lost!" + "X wins!"
+        // - you_won -> "You wone!"
+        // - you_lose -> "You lost!" + "X won!"
         // - draw     -> "Draw!" + "You = Dealer/Opp"
 
         const QString outcome = obj.value("outcome").toString();
@@ -593,7 +593,7 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
         QString text;
 
         if (outcome == "you_win") {
-            text = "You win!";
+            text = "You won!";
         }
         else if (outcome == "you_lose") {
 
@@ -601,7 +601,7 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
             if (winnerName.isEmpty())
                 winnerName = "Dealer";
 
-            text = "You lost!\n" + winnerName + " wins!";
+            text = "You lost!\n" + winnerName + " won!";
         }
         else if (outcome == "draw") {
 
