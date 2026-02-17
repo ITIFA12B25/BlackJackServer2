@@ -316,13 +316,6 @@ void GameSession::broadcastToRoom(const QJsonObject& obj)
 // ------------------------------------------------------------
 void GameSession::broadcastState(RoomState& r)
 {
-    // Dealer-Karten: im Spiel erste Karte verdeckt
-    QJsonArray dealerCards;
-    for (int i = 0; i < r.dealer.cards.size(); ++i) {
-        if (r.phase == GamePhase::Playing && i == 0) dealerCards.append("?");
-        else dealerCards.append(cardToString(r.dealer.cards[i]));
-    }
-
     // Helper: Hand -> JSON Array von Strings
     auto cardsToJson = [](const Hand& h){
         QJsonArray arr;
@@ -330,18 +323,24 @@ void GameSession::broadcastState(RoomState& r)
         return arr;
     };
 
+    // Dealer-Karten: im Spiel erste Karte verdeckt
+    QJsonArray dealerCards;
+    for (int i = 0; i < r.dealer.cards.size(); ++i) {
+        if (r.phase == GamePhase::Playing && i == 0) dealerCards.append("?");
+        else dealerCards.append(cardToString(r.dealer.cards[i]));
+    }
+
     // State Objekt bauen
     QJsonObject state;
     state["type"] = "state";
     state["roomId"] = r.roomId;
 
-    // Phase als Text
+    // Phase + Turn
     state["phase"] = (r.phase == GamePhase::Playing ? "playing" : "finished");
     state["currentTurn"] = r.currentTurn;
 
     // Dealer Infos
     state["dealerCards"] = dealerCards;
-    // Dealer total nur zeigen, wenn Runde fertig ist
     state["dealerTotal"] = (r.phase == GamePhase::Playing ? -1 : handValue(r.dealer));
 
     // Player 0 Infos
@@ -356,9 +355,13 @@ void GameSession::broadcastState(RoomState& r)
     state["p1_total"] = handValue(r.players[1].hand);
     state["p1_stood"] = r.players[1].stood;
 
-    // An beide Sessions senden
+    // An beide Sessions senden (mit "you" pro Client)
     for (int i = 0; i < 2; ++i) {
-        if (r.sessions[i]) r.sessions[i]->sendJson(state);
+        if (r.sessions[i]) {
+            QJsonObject perClient = state; // Kopie
+            perClient["you"] = i;          // Seat für diesen Client (0/1)
+            r.sessions[i]->sendJson(perClient);
+        }
     }
 }
 
