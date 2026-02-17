@@ -37,8 +37,7 @@ private slots:
     // Spiel-Aktionen (Buttons)
     void onHitClicked();                                     // Karte ziehen
     void onStandClicked();                                   // stehen bleiben
-    void onNewRoundClicked();                                // neue Runde starten
-
+    void resetGameUi();                                     //alle Lable und tasten reset
     // Verbindung getrennt (Server/Client Disconnect)
     void onDisconnected();
 

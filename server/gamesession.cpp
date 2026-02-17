@@ -3,7 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QDebug>
-
+#include <algorithm>
 #include "card.h"
 #include "hand.h"
 
@@ -82,7 +82,6 @@ void GameSession::handleLine(const QByteArray& line)
 // - leave_room
 // - hit
 // - stand
-// - newround
 // ------------------------------------------------------------
 void GameSession::handleMessage(const QJsonObject& msg)
 {
@@ -233,43 +232,6 @@ void GameSession::handleMessage(const QJsonObject& msg)
         tryFinishIfAllDone(*r);
         return;
     }
-
-    // ------------------------------------------------------------
-    // newround: neue Runde starten (nur wenn Finished)
-    // ------------------------------------------------------------
-    if (type == "newround") {
-        // Nur erlaubt, wenn Runde beendet ist
-        if (r->phase != GamePhase::Finished) { sendError("round not finished"); return; }
-
-        // Deck + Dealer reset
-        r->deck.reset();
-        r->dealer.cards.clear();
-
-        // Spieler reset
-        for (int i = 0; i < 2; ++i) {
-            r->players[i].hand.cards.clear();
-            r->players[i].stood = false;
-        }
-
-        // Startkarten neu geben
-        r->players[0].hand.cards.push_back(r->deck.draw());
-        r->players[0].hand.cards.push_back(r->deck.draw());
-
-        r->players[1].hand.cards.push_back(r->deck.draw());
-        r->players[1].hand.cards.push_back(r->deck.draw());
-
-        r->dealer.cards.push_back(r->deck.draw());
-        r->dealer.cards.push_back(r->deck.draw());
-
-        // Phase wieder Playing
-        r->phase = GamePhase::Playing;
-
-        // Info + State senden
-        broadcastToRoom(QJsonObject{{"type","newround"},{"msg","ok"}});
-        broadcastState(*r);
-        return;
-    }
-
     // Wenn type nicht bekannt ist
     sendError("unknown command");
 }
@@ -396,24 +358,89 @@ void GameSession::tryFinishIfAllDone(RoomState& r)
     r.phase = GamePhase::Finished;
 
     const int dealerTotal = handValue(r.dealer);
+    const int p0Total = handValue(r.players[0].hand);
+    const int p1Total = handValue(r.players[1].hand);
 
-    // Ergebnis für beide Spieler berechnen und senden
+    // -------------------- Gewinner nach Regel: <=21 und am höchsten --------------------
+    auto score = [](int total) -> int {
+        return (total > 21) ? -1 : total; // bust => -1 (verliert immer)
+    };
+
+    const int sd  = score(dealerTotal);
+    const int sp0 = score(p0Total);
+    const int sp1 = score(p1Total);
+
+    // bestScore = höchste Zahl <= 21
+    const int bestScore = std::max(sd, std::max(sp0, sp1));
+
+    // Gewinner-Flags (können mehrere sein bei Gleichstand)
+    const bool dealerWins = (sd  == bestScore && bestScore >= 0);
+    const bool p0Wins     = (sp0 == bestScore && bestScore >= 0);
+    const bool p1Wins     = (sp1 == bestScore && bestScore >= 0);
+
+    // Text für Gewinner (für UI)
+    QStringList winners;
+    if (dealerWins) winners << "Dealer";
+    if (p0Wins) winners << (r.players[0].name.isEmpty() ? "Player0" : r.players[0].name);
+    if (p1Wins) winners << (r.players[1].name.isEmpty() ? "Player1" : r.players[1].name);
+
+    const QString winnersText = winners.isEmpty() ? "Nobody" : winners.join(", ");
+
+    // Ergebnis an beide Clients senden (aus Sicht des jeweiligen Spielers)
     for (int i = 0; i < 2; ++i) {
-        const int playerTotal = handValue(r.players[i].hand);
-        const QString out = outcomeFor(playerTotal, dealerTotal);
+        const bool youWin = (i == 0 ? p0Wins : p1Wins);
 
-        // CSV speichern (Server-Log)
-        m_manager->appendWinnerCsv(r.roomId, r.players[i].name, out, playerTotal, dealerTotal);
+        // Draw = mehrere Gewinner ODER keiner <=21 (bestScore < 0)
+        const bool isDraw = (bestScore < 0) || (winners.size() > 1);
 
-        // Ergebnis an jeweiligen Client senden
+        QString out;
+        if (isDraw) out = "draw";
+        else out = (youWin ? "you_win" : "you_lose");
+
+        // CSV speichern (optional)
+        m_manager->appendWinnerCsv(r.roomId, r.players[i].name, out,
+                                   (i==0 ? p0Total : p1Total), dealerTotal);
+
         if (r.sessions[i]) {
+
+            // Namen sauber vorbereiten (wenn leer -> "Player")
+            const QString p0Name = r.players[0].name.trimmed().isEmpty() ? "Player" : r.players[0].name.trimmed();
+            const QString p1Name = r.players[1].name.trimmed().isEmpty() ? "Player" : r.players[1].name.trimmed();
+
+            // Für diesen Client: Gegner-Name bestimmen
+            const QString oppName = (i == 0 ? p1Name : p0Name);
+
+            // Wer hat gewonnen? (eindeutig nur wenn kein Draw)
+            QString winnerName = "Dealer";
+            if (!dealerWins) {
+                // Wenn Dealer nicht gewonnen hat, dann hat ein Spieler gewonnen
+                winnerName = (p0Wins ? p0Name : p1Name);
+            }
+
+            // Ergebnis-Paket an Client schicken (mit Namen!)
             r.sessions[i]->sendJson(QJsonObject{
-                {"type","result"},
+                {"type", "result"},
                 {"roomId", r.roomId},
-                {"you", i},
+
+                // Outcome bleibt wie du es machst: "draw" / "you_win" / "you_lose"
                 {"outcome", out},
-                {"playerTotal", playerTotal},
-                {"dealerTotal", dealerTotal}
+
+                // Gewinner als Text (für Debug/Anzeige optional)
+                {"winners", winnersText},
+
+                // Totals
+                {"p0_total", p0Total},
+                {"p1_total", p1Total},
+                {"dealerTotal", dealerTotal},
+
+                // WICHTIG: Namen mitschicken, damit Client sie anzeigen kann
+                {"p0_name", p0Name},
+                {"p1_name", p1Name},
+
+                // Optional: für Client bequem (nicht zwingend)
+                {"you", i},                 // 0 oder 1
+                {"opp_name", oppName},      // Name vom Gegner (oder "Player")
+                {"winner_name", winnerName} // Name vom Gewinner (Dealer oder Spielername)
             });
         }
     }

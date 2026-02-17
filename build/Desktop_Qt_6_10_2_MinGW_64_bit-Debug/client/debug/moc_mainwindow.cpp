@@ -46,7 +46,7 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "QAbstractSocket::SocketError",
         "onHitClicked",
         "onStandClicked",
-        "onNewRoundClicked",
+        "resetGameUi",
         "onDisconnected"
     };
 
@@ -63,7 +63,7 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onStandClicked'
         QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onNewRoundClicked'
+        // Slot 'resetGameUi'
         QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'onDisconnected'
         QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
@@ -95,7 +95,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 2: _t->onErrorOccurred((*reinterpret_cast<std::add_pointer_t<QAbstractSocket::SocketError>>(_a[1]))); break;
         case 3: _t->onHitClicked(); break;
         case 4: _t->onStandClicked(); break;
-        case 5: _t->onNewRoundClicked(); break;
+        case 5: _t->resetGameUi(); break;
         case 6: _t->onDisconnected(); break;
         default: ;
         }

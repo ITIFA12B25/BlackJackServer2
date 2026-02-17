@@ -13,7 +13,7 @@
 #include <QAbstractItemView>
 
 // ------------------------------------------------------------
-// Hilfsfunktion: Aktiviert Root + Parents + Children
+// Hilfsfunktion:
 // Zweck: Manche Widgets werden (z.B. durch stackedWidget) deaktiviert.
 // Hinweis: Danach Buttons/Controls gezielt per UI-State setzen.
 // ------------------------------------------------------------
@@ -40,7 +40,6 @@ static void forceEnableAll(QWidget* root)
 // - Key "AH" -> Pfad zur PNG in Qt-Resources
 // - Key "?"  -> back.png (verdeckte Karte)
 // ------------------------------------------------------------
-#include <QFile>
 
 // Wandelt Karten-Key (z.B. "AH") in Resource-Pfad um
 static QString cardKeyToResourcePath(const QString& key)
@@ -150,7 +149,47 @@ QTableWidget* MainWindow::tbl(const char* objectName) const
 {
     return this->findChild<QTableWidget*>(objectName);
 }
+// ------------------------------------------------------------
+// Reset: Spiel-UI sauber machen
+// Zweck: Nach Leave/Back sollen alte Karten/Labels weg sein.
+// ------------------------------------------------------------
+void MainWindow::resetGameUi()
+{
+    // Texte leeren
+    if (QLabel* w = lbl("lblWinner"))  w->clear();
+    if (QLabel* s = lbl("status"))     s->clear();
+    if (QLabel* st = lbl("lblStatus")) st->clear();
 
+    if (QLabel* r = lbl("lblRoomInfo"))    r->clear();
+    if (QLabel* r2 = lbl("lblRoomInfo_2")) r2->clear();
+
+    if (QLabel* op = lbl("lblOppName")) op->clear();
+
+    if (QLabel* dt = lbl("lblDealerTotal")) dt->clear();
+    if (QLabel* pt = lbl("lblPlayerTotal")) pt->clear();
+    if (QLabel* ot = lbl("lblOppTotal"))    ot->clear();
+
+    // Karten leeren (Pixmaps)
+    clearCardLabel(lbl("lblDealerCard1"));
+    clearCardLabel(lbl("lblDealerCard2"));
+    clearCardLabel(lbl("lblDealerCard3"));
+    clearCardLabel(lbl("lblDealerCard4"));
+
+    clearCardLabel(lbl("lblPlayerCard1"));
+    clearCardLabel(lbl("lblPlayerCard2"));
+    clearCardLabel(lbl("lblPlayerCard3"));
+    clearCardLabel(lbl("lblPlayerCard4"));
+
+    clearCardLabel(lbl("lblOppCard1"));
+    clearCardLabel(lbl("lblOppCard2"));
+    clearCardLabel(lbl("lblOppCard3"));
+    clearCardLabel(lbl("lblOppCard4"));
+
+    // Tabelle leeren
+    if (ui->tableWidget) {
+        ui->tableWidget->clearContents();
+    }
+}
 // ------------------------------------------------------------
 // Konstruktor: UI initialisieren, Signals/Slots verbinden, Socket starten
 // ------------------------------------------------------------
@@ -277,11 +316,15 @@ MainWindow::MainWindow(QWidget *parent)
     // leave_room an Server und zurück zur Lobby
     connect(ui->btnLeaveGame1, &QPushButton::clicked, this, [this]{
         sendJson(QJsonObject{{"type","leave_room"}});
+        m_roomId.clear();
+        m_seat = -1;
         enterLobby();
     });
 
     connect(ui->btnLeaveGame2, &QPushButton::clicked, this, [this]{
         sendJson(QJsonObject{{"type","leave_room"}});
+        m_roomId.clear();
+        m_seat = -1;
         enterLobby();
     });
 
@@ -293,12 +336,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnHit2,   &QPushButton::clicked, this, &MainWindow::onHitClicked);
     connect(ui->btnStand2, &QPushButton::clicked, this, &MainWindow::onStandClicked);
 
-    connect(ui->btnNewRound,   &QPushButton::clicked, this, &MainWindow::onNewRoundClicked);
-    connect(ui->btnNewRound_2, &QPushButton::clicked, this, &MainWindow::onNewRoundClicked);
-
-    // Start: NewRound ist deaktiviert, bis Ergebnis kommt
-    ui->btnNewRound->setEnabled(false);
-    ui->btnNewRound_2->setEnabled(false);
 
     // ---------------- Socket (global) ----------------
     // Diese connects gelten immer, egal ob Join oder Create
@@ -331,10 +368,12 @@ void MainWindow::setConnectionText(const QString& text)
 
 void MainWindow::enterLobby()
 {
+    // Wenn wir in Lobby gehen, altes Spiel komplett löschen
+    resetGameUi();
+
     ui->stackedWidget->setCurrentWidget(ui->pageLobby);
     forceEnableAll(ui->pageLobby);
 
-    // Text zeigt den aktuellen Socket-State
     setConnectionText(m_socket.state() == QAbstractSocket::ConnectedState ? "Connected" : "Disconnected");
 }
 
@@ -364,8 +403,6 @@ void MainWindow::enterGameSimple()
     ui->btnSwitchToTable->setEnabled(true);
     ui->btnLeaveGame1->setEnabled(true);
 
-    // NewRound in dieser Ansicht erstmal aus
-    ui->btnNewRound_2->setEnabled(false);
 }
 
 void MainWindow::enterGameTable()
@@ -378,9 +415,6 @@ void MainWindow::enterGameTable()
     ui->btnStand2->setEnabled(true);
     ui->btnSwitchToSimple->setEnabled(true);
     ui->btnLeaveGame2->setEnabled(true);
-
-    // NewRound in dieser Ansicht erstmal aus
-    ui->btnNewRound->setEnabled(false);
 
     // Tabelle initialisieren (falls existiert)
     if (ui->tableWidget) {
@@ -444,12 +478,11 @@ void MainWindow::onErrorOccurred(QAbstractSocket::SocketError)
 // ------------------------------------------------------------
 void MainWindow::handleServerMessage(const QJsonObject& obj)
 {
-    //-----------------test -------------
-    qDebug() << "STATE you=" << obj.value("you").toInt(-1)
-             << "turn=" << obj.value("currentTurn").toInt(-1)
-             << "phase=" << obj.value("phase").toString();
-    //-----------------------------------------
     const QString type = obj.value("type").toString();
+    // ------------------------------------------------------------
+    // Gegner-Name anzeigen
+    // - Wenn leer -> "Player"
+    // ------------------------------------------------------------
 
     if (type == "room_created") {
         // Server hat Room erstellt und Sitzplatz vergeben
@@ -489,37 +522,95 @@ void MainWindow::handleServerMessage(const QJsonObject& obj)
         // Spielstand: UI in beiden Ansichten aktualisieren
         updateGameSimpleFromState(obj);
         updateGameTableFromState(obj);
+        // ------------------------------------------------------------
+        // Gegner-Name NUR HIER setzen (damit updateGame... es nicht überschreibt)
+        // ------------------------------------------------------------
+        const int youSeat = obj.contains("you") ? obj.value("you").toInt(m_seat) : m_seat;
+
+        QString p0 = obj.value("p0_name").toString().trimmed();
+        QString p1 = obj.value("p1_name").toString().trimmed();
+
+        if (p0.isEmpty()) p0 = "Player";
+        if (p1.isEmpty()) p1 = "Player";
+
+        const QString oppName = (youSeat == 0 ? p1 : p0);
+
+        // Nur den Namen anzeigen
+        if (QLabel* o = lbl("lblOppName")) {
+            o->setText(oppName);
+        }
         return;
     }
 
     if (type == "result") {
-        // Runde zu Ende -> NewRound aktiv, Hit/Stand deaktivieren
-        ui->btnNewRound->setEnabled(true);
-        ui->btnNewRound_2->setEnabled(true);
 
+        // Runde beendet -> Buttons deaktivieren
         ui->btnHit->setEnabled(false);
         ui->btnStand->setEnabled(false);
         ui->btnHit2->setEnabled(false);
         ui->btnStand2->setEnabled(false);
 
-        const QString outcome = obj.value("outcome").toString();
-        const QString winners = obj.value("winners").toString().trimmed();
-
-        // --------- Winner Text in lblWinner (englisch) ----------
         QString text;
 
+        // Outcome vom Server (you_win / you_lose / draw)
+        const QString outcome = obj.value("outcome").toString();
+
+        // Eigener Sitz (0 oder 1)
+        const int youSeat = obj.value("you").toInt(m_seat);
+
+        // Namen vom Server lesen
+        QString p0Name = obj.value("p0_name").toString().trimmed();
+        QString p1Name = obj.value("p1_name").toString().trimmed();
+
+        if (p0Name.isEmpty()) p0Name = "Player";
+        if (p1Name.isEmpty()) p1Name = "Player";
+
+        // Gegner-Name bestimmen
+        QString oppName = (youSeat == 0 ? p1Name : p0Name);
+
+        // Gewinner-Name (vom Server geschickt)
+        QString winnerName = obj.value("winner_name").toString().trimmed();
+        if (winnerName.isEmpty()) winnerName = "Dealer";
+
+        // ------------------------------------------------------------
+        // Anzeige-Regeln
+        // ------------------------------------------------------------
+
         if (outcome == "you_win") {
+
             text = "You win!";
-        } else if (outcome == "you_lose") {
-            // Gewinner anzeigen (Dealer oder Spielername; falls leer -> Player)
-            QString name = winners.isEmpty() ? "Player" : winners;
-            text = name + " wins!";
-        } else { // draw
+
+        }
+        else if (outcome == "you_lose") {
+
+            // Wenn Dealer gewonnen hat
+            if (winnerName == "Dealer") {
+                text = "You lost!\nDealer wins!";
+            }
+            else {
+                // Gegner gewonnen
+                text = "You lost!\n" + oppName + " wins!";
+            }
+        }
+        else if (outcome == "draw") {
+
             text = "Draw!";
+
+        }
+        else {
+
+            text = "Round finished!";
         }
 
-        if (QLabel* w = lbl("lblWinner")) w->setText(text);
-        if (QLabel* s = lbl("status")) s->setText("Round finished");
+        // Winner Label setzen
+        if (QLabel* w = lbl("lblWinner"))
+            w->setText(text);
+
+        if (QLabel* s = lbl("status"))
+            s->setText("Round finished");
+
+        if (QLabel* st = lbl("lblStatus"))
+            st->setText("Round finished");
 
         return;
     }
@@ -578,29 +669,9 @@ void MainWindow::onStandClicked()
     sendJson(QJsonObject{{"type","stand"}});
 }
 
-void MainWindow::onNewRoundClicked()
-{
-    // Neue Runde starten
-    sendJson(QJsonObject{{"type","newround"}});
-
-    // Buttons zurücksetzen
-    ui->btnNewRound->setEnabled(false);
-    ui->btnNewRound_2->setEnabled(false);
-
-    ui->btnHit->setEnabled(true);
-    ui->btnStand->setEnabled(true);
-    ui->btnHit2->setEnabled(true);
-    ui->btnStand2->setEnabled(true);
-    if (QLabel* w = lbl("lblWinner")) w->clear();
-
-}
 
 // ------------------------------------------------------------
 // UI Update: GameSimple (Bilder)
-// Erwartete Labels (objectName in .ui):
-// - lblDealerCard1, lblDealerCard2, lblDealerCard3(optional)
-// - lblPlayerCard1, lblPlayerCard2, lblPlayerCard3(optional)
-// - lblOppCard1,    lblOppCard2,    lblOppCard3(optional)
 // Totals optional:
 // - lblDealerTotal, lblPlayerTotal, lblOppTotal
 // ------------------------------------------------------------
@@ -652,7 +723,6 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
     if (opp.size() > 2) setCardLabel(o3, opp[2].toString(), oppSize); else clearCardLabel(o3);
     if (opp.size() > 3) setCardLabel(o4, opp[3].toString(), oppSize); else clearCardLabel(o4);
 
-
     // Totals + Phase
     const QString phase = state.value("phase").toString();
     const int dealerTotal = state.value("dealerTotal").toInt();
@@ -685,14 +755,24 @@ void MainWindow::updateGameSimpleFromState(const QJsonObject& state)
         }
     }
     // ---------- Opponent Name anzeigen ----------
-    // Gegnername in lblOppName (nur Name, sonst "Player")
-    const QString p0name = state.value("p0_name").toString().trimmed();
-    const QString p1name = state.value("p1_name").toString().trimmed();
+    // Gegnername aus state holen
+    QString p0name = state.value("p0_name").toString().trimmed();
+    QString p1name = state.value("p1_name").toString().trimmed();
 
-    QString oppName = (m_seat == 0 ? p1name : p0name);
-    if (oppName.isEmpty()) oppName = "Player";
+    // Gegner bestimmen (anderer Seat)
+    QString oppName;
+    if (m_seat == 0)
+        oppName = p1name;
+    else
+        oppName = p0name;
 
-    if (QLabel* on = lbl("lblOppName")) on->setText(oppName);
+    // Falls kein Name eingegeben wurde -> "Player"
+    if (oppName.isEmpty())
+        oppName = "Player";
+
+    // Nur Name anzeigen
+    if (QLabel* l = lbl("lblOppName"))
+        l->setText(oppName);
 }
 
 // ------------------------------------------------------------
